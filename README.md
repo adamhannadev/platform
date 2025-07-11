@@ -1,24 +1,30 @@
-# README
+# Platform
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A project to create an online platform for booking dance classes and keeping track of student progress.
 
-Things you may want to cover:
 
-* Ruby version
+    Teacher
+last_name:string
+first_name:string
+email:string
+phone:string
 
-* System dependencies
+    Student
+last_name:string
+first_name:string
+phone:string
+email:string
 
-* Configuration
+    Class
+has_one:teacher
+has_many:students
+start_date:datetime
+duration:float
+max_attendance:int
+min_attendance:int
+booking_deadline:datetime
 
-* Database creation
+    Program
 
-* Database initialization
 
-* How to run the test suite
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
