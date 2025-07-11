@@ -7,3 +7,15 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+# Create Teachers
+teacher1 = Teacher.create!(first_name: "Alice", last_name: "Smith", email: "alice@example.com", phone: "1234567890")
+teacher2 = Teacher.create!(first_name: "Bob", last_name: "Johnson", email: "bob@example.com", phone: "0987654321")
+
+# Create Students
+student1 = Student.create!(first_name: "Charlie", last_name: "Brown", email: "charlie@example.com", phone: "5551112222")
+student2 = Student.create!(first_name: "Dana", last_name: "White", email: "dana@example.com", phone: "5553334444")
+
+# Create Lessons
+Lesson.create!(lesson_time: DateTime.now + 1.day, student: student1, teacher: teacher1, plan: "Intro lesson")
+Lesson.create!(lesson_time: DateTime.now + 2.days, student: student2, teacher: teacher2, plan: "Advanced lesson")
