@@ -11,4 +11,8 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  resources :teachers, defaults: { format: :json }
+  resources :students, defaults: { format: :json }
+  resources :lessons, defaults: { format: :json }
 end
