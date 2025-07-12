@@ -3,8 +3,8 @@ class CreateTeachers < ActiveRecord::Migration[7.2]
     create_table :teachers do |t|
       t.string :last_name
       t.string :first_name
-      t.string :email
       t.string :phone
+      t.string :email
 
       t.timestamps
     end

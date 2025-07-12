@@ -1,13 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  lesson_time: 2025-07-11 09:21:22
+  lesson_time: 2025-07-11 17:09:05
   student: one
   teacher: one
   plan: MyText
 
 two:
-  lesson_time: 2025-07-11 09:21:22
+  lesson_time: 2025-07-11 17:09:05
   student: two
   teacher: two
   plan: MyText
