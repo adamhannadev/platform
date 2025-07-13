@@ -1,0 +1,9 @@
+
+
+
+<%= month_calendar events: @teacher.lessons do |date, lessons| %>
+<%= date %>
+    <% lessons.each do |l| %>
+         <%= l.student.full_name %> at <%= l.start_time.strftime("%H:%M") %>
+    <% end %>
+<% end %>

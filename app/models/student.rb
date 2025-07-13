@@ -1,3 +1,7 @@
 class Student < ApplicationRecord
     has_many :lessons, dependent: :destroy
+    
+    def full_name
+        return self.first_name + " " + self.last_name
+    end
 end

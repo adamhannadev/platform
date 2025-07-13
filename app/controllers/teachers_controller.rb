@@ -1,5 +1,5 @@
 class TeachersController < ApplicationController
-  before_action :set_teacher, only: %i[ show edit update destroy ]
+  before_action :set_teacher, only: %i[ show edit update destroy calendar ]
 
   # GET /teachers or /teachers.json
   def index
@@ -57,6 +57,9 @@ class TeachersController < ApplicationController
     end
   end
 
+  def calendar
+  end
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_teacher
