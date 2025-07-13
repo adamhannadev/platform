@@ -1,5 +1,5 @@
 class TeachersController < ApplicationController
-  before_action :set_teacher, only: %i[ show edit update destroy calendar ]
+  before_action :set_teacher, only: %i[ show edit update destroy ]
 
   # GET /teachers or /teachers.json
   def index
@@ -55,9 +55,6 @@ class TeachersController < ApplicationController
       format.html { redirect_to teachers_url, notice: "Teacher was successfully destroyed." }
       format.json { head :no_content }
     end
-  end
-
-  def calendar
   end
 
   private
