@@ -1,0 +1,25 @@
+<h1 class="header">Schedule for <%= @teacher.first_name %> for the week of <%= Date.current.beginning_of_week.strftime("%A, %B %d, %Y") %></h1>
+
+<table>
+  <thead>
+    <th>Date</th>
+    <th>Student</th>
+    <th>Time</th>
+  </thead>
+  <tbody>
+    <% @teacher.lessons.each do |lesson| %>
+      <tr>
+        <td><%= lesson.start_time.strftime("%A, %B %d, %Y") %></td>
+        <td><%= lesson.student.full_name %></td>
+        <td><%= link_to lesson.start_time.strftime("%I:%M %p"), lesson_path(lesson) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<style>
+.header{
+  text-align: center;
+  margin-bottom: 20px;
+}
+</style>

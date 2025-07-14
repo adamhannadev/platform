@@ -1,5 +1,5 @@
 class TeachersController < ApplicationController
-  before_action :set_teacher, only: %i[ show edit update destroy calendar ]
+  before_action :set_teacher, only: %i[ show edit update destroy schedule ]
 
   # GET /teachers or /teachers.json
   def index
@@ -57,7 +57,7 @@ class TeachersController < ApplicationController
     end
   end
 
-  def calendar
+  def schedule
   end
   
   private

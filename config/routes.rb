@@ -13,8 +13,8 @@ Rails.application.routes.draw do
   root "teachers#index"
 
   resources :teachers
-  get "teachers/:id/calendar" => "teachers#calendar", as: :teacher_calendar
-  
+  get "teachers/:id/schedule" => "teachers#schedule", as: :teacher_schedule
+
   resources :students
   resources :lessons
 end
