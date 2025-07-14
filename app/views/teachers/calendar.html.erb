@@ -1,0 +1,79 @@
+<h1>Square Calendar</h1>
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <%= link_to "← Back", teacher_calendar_path(@teacher, week: (@week_start - 1.week).to_s), class: "btn" %>
+  <span>Week of <%= @week_start.strftime("%b %d, %Y") %></span>
+  <%= link_to "Next →", teacher_calendar_path(@teacher, week: (@week_start + 1.week).to_s), class: "btn" %>
+</div>
+
+<table class="square-calendar">
+  <thead>
+    <tr>
+      <% 7.times do |i| %>
+        <th><%= (@week_start + i).strftime("%A") %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <% 7.times do |i| %>
+        <% day = @week_start + i %>
+        <td>
+          <strong><%= day.strftime("%b %d") %></strong><br>
+          <% @lessons.where("DATE(start_time) = ?", day).each do |lesson| %>
+            <div class="lesson-block">
+              <%= link_to "#{lesson.start_time.strftime("%I:%M %p")} - #{lesson.student.full_name}", lesson_path(lesson) %>
+            </div>
+          <% end %>
+        </td>
+      <% end %>
+    </tr>
+  </tbody>
+</table>
+
+<style>
+.square-calendar {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.square-calendar th {
+  border: 1px solid #ccc;
+  text-align: center;
+  vertical-align: top;
+  width: 14.28%;
+  height: 20px;
+  padding: 8px;
+}
+.square-calendar td {
+  border: 1px solid #ccc;
+  text-align: left;
+  vertical-align: top;
+  width: 14.28%;
+  height: 150px;
+  padding: 8px;
+}
+.lesson-block {
+  background: #f5f5f5;
+  text-decoration: none;
+  margin: 4px 0;
+  padding: 4px;
+  border-radius: 4px; 
+}
+.lesson-block > a{
+  text-decoration:none;
+  color:black;
+}
+.btn {
+  background: #eee;
+  border: 1px solid #ccc;
+  padding: 6px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+.btn:hover {
+  background: #ddd;
+}
+</style>

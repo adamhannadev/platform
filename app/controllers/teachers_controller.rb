@@ -1,5 +1,5 @@
 class TeachersController < ApplicationController
-  before_action :set_teacher, only: %i[ show edit update destroy schedule ]
+  before_action :set_teacher, only: %i[ show edit update destroy calendar ]
 
   # GET /teachers or /teachers.json
   def index
@@ -57,7 +57,12 @@ class TeachersController < ApplicationController
     end
   end
 
-  def schedule
+
+  def calendar
+    week_start = params[:week] ? Date.parse(params[:week]) : Date.current.beginning_of_week
+    week_end = week_start.end_of_week
+    @week_start = week_start
+    @lessons = @teacher.lessons.where(start_time: week_start..week_end)
   end
   
   private
