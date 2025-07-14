@@ -1,9 +1,38 @@
+<%= week_calendar events: @teacher.lessons do |date, lessons| %>
+  <%= date.day %><br>
 
-
-
-<%= month_calendar events: @teacher.lessons do |date, lessons| %>
-<%= date %>
-    <% lessons.each do |l| %>
-         <%= l.student.full_name %> at <%= l.start_time.strftime("%H:%M") %>
-    <% end %>
 <% end %>
+
+<style>
+
+.simple-calendar {
+  width: 80%;
+  margin: 0 auto;
+  border-collapse: separate;
+  table-layout: fixed;
+
+}
+
+.simple-calendar th,
+.simple-calendar td {
+  text-align: center;
+  vertical-align: top;
+  width: 14.28%; /* 100% / 7 days */
+  padding: 16px;
+  border: 1px solid #ddd;
+}
+
+.simple-calendar th {
+  background: #f5f5f5;
+  font-weight: bold;
+}
+
+.simple-calendar td {
+  background: #fff;
+  width: 14.28%; /* 100% / 7 days */
+}
+
+.simple-calendar tbody>tr {
+  height: 35rem;
+}
+</style>
