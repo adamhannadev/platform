@@ -4,13 +4,29 @@
 
 <h1>Students</h1>
 
-<div id="students">
-  <% @students.each do |student| %>
-    <%= render student %>
-    <p>
-      <%= link_to "Show this student", student %>
-    </p>
-  <% end %>
-</div>
+<table class="tbl">
+  <thead>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th>Lessons</th>
+    <th></th>
+    <th></th>
+  </thead>
+  <tbody>
+    <% @students.each do |s| %>
+      <tr>
+        <td><%= s.email %></td>
+        <td><%= s.phone %></td>
+        <td><%= s.lessons.count %></td>
+        <td><%= s.full_name %></td>
+        <td><%= button_to "Edit", edit_student_path(s), method: :get, class: "btn" %></td>
+        <td>
+          <%= button_to "Delete", student_path(s), method: :delete, data: { confirm: "Are you sure?" }, class: "btn" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <%= link_to "New student", new_student_path %>
