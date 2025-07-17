@@ -4,13 +4,29 @@
 
 <h1>Lessons</h1>
 
-<div id="lessons">
-  <% @lessons.each do |lesson| %>
-    <%= render lesson %>
-    <p>
-      <%= link_to "Show this lesson", lesson %>
-    </p>
-  <% end %>
-</div>
+<table class="tbl">
+  <thead>
+    <th>Start Time</th>
+    <th>Teacher</th>
+    <th>Student</th>
+    <th>Plan</th>
+    <th></th>
+    <th></th>
+  </thead>
+  <tbody>
+    <% @lessons.each do |l| %>
+      <tr>
+        <td><%= l.start_time.strftime("%b %d, %Y - %I:%M %p") %></td>
+        <td><%= l.student.full_name %></td>
+        <td><%= l.teacher.full_name %></td>
+        <td><%= l.plan %></td>
+        <td><%= button_to "Edit", edit_lesson_path(l), method: :get, class: "btn" %></td>
+        <td>
+          <%= button_to "Delete", lesson_path(l), method: :delete, data: { confirm: "Are you sure?" }, class: "btn" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <%= link_to "New lesson", new_lesson_path %>

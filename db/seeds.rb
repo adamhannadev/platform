@@ -17,5 +17,5 @@ student1 = Student.create!(first_name: "Charlie", last_name: "Brown", email: "ch
 student2 = Student.create!(first_name: "Dana", last_name: "White", email: "dana@example.com", phone: "5553334444")
 
 # Create Lessons
-Lesson.create!(lesson_time: DateTime.now + 1.day, student: student1, teacher: teacher1, plan: "Intro lesson")
-Lesson.create!(lesson_time: DateTime.now + 2.days, student: student2, teacher: teacher2, plan: "Advanced lesson")
+Lesson.create!(start_time: DateTime.now + 1.day, student: student1, teacher: teacher1, plan: "Intro lesson")
+Lesson.create!(start_time: DateTime.now + 2.days, student: student2, teacher: teacher2, plan: "Advanced lesson")
