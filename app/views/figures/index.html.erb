@@ -7,25 +7,40 @@
 <table id="figures">
   <thead>
     <th></th>
+    <th>Name</th>
+    <th>Variations</th>
   </thead>
   <tbody>
-    <% @figures.each do |f| %>
-    <tr>
-      <td><%= f.level %></td>
-      <td><%= f.number %></td>
-      <td><%= f.name %></td>
-      <td><%= f.bars %></td>
-      <td><%= f.components %></td>
-    </tr>
+
+    <% levels = ["Bronze 1", "Bronze 2", "Bronze 3", "Bronze 4"] %>
+    <% levels.each do |l| %>
+    <% bronze_figures = @figures.select { |f| f.level == l } %>
+    <% bronze_figures.each_with_index do |f, i| %>
+      <tr class="<%= 'core' if f.core %>">
+        <% if i == 0 %>
+          <td rowspan="<%= bronze_figures.size %>" class="vertical-label"><%= l %></td>
+        <% end %>
+        <td><%="#{f.number}. #{f.name}" if f.core %></td>
+        <td><%= "#{f.number}. #{f.name}" unless f.core %></td>
+      </tr>
+    <% end %>
     <% end %>
   </tbody>
-
 </table>
 
 <%= link_to "New figure", new_figure_path %>
 
 <style>
   #figures {
-    border: 1px solid black
+    border: 1px solid black;
+  }
+  .core {
+    font-weight: bold;
+  }
+  .vertical-label {
+    writing-mode: vertical-rl;
+    text-align: center;
+    font-weight: bold;
+    background: #f0f0f0;
   }
 </style>
