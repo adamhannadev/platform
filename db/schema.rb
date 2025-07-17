@@ -10,7 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_13_173801) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_17_225049) do
+  create_table "components", force: :cascade do |t|
+    t.string "name"
+    t.string "role"
+    t.string "timing"
+    t.text "movement"
+    t.text "partnering"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "figures", force: :cascade do |t|
+    t.string "name"
+    t.string "dance"
+    t.string "number"
+    t.integer "bars"
+    t.text "components"
+    t.boolean "core"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "level"
+  end
+
   create_table "lessons", force: :cascade do |t|
     t.datetime "start_time"
     t.integer "student_id", null: false

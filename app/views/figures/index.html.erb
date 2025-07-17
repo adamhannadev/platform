@@ -1,0 +1,31 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Figures" %>
+
+<h1>Figures</h1>
+
+<table id="figures">
+  <thead>
+    <th></th>
+  </thead>
+  <tbody>
+    <% @figures.each do |f| %>
+    <tr>
+      <td><%= f.level %></td>
+      <td><%= f.number %></td>
+      <td><%= f.name %></td>
+      <td><%= f.bars %></td>
+      <td><%= f.components %></td>
+    </tr>
+    <% end %>
+  </tbody>
+
+</table>
+
+<%= link_to "New figure", new_figure_path %>
+
+<style>
+  #figures {
+    border: 1px solid black
+  }
+</style>
