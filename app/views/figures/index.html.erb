@@ -2,16 +2,24 @@
 
 <% content_for :title, "Figures" %>
 
-<h1>Foxtrot Figures</h1>
+<h1>Figures</h1>
 
 <table id="figures">
   <thead>
-    <th>Core Figure</th>
+    <th></th>
+    <th>Figure</th>
+    <th>Level</th>
+    <th>Dance</th>
   </thead>
   <tbody>
-    <tr>
-      <td>something</td>
+    <% @figures.each do |f| %>
+    <tr class="<%= 'core' if f.core %>">
+      <td style="width: 1rem;" class="<%= 'variation' unless f.core %>"><%= f.number %></td>
+      <td><%= f.name %></td>
+      <td><%= f.level %></td>
+      <td><%= f.dance %></td>
     </tr>
+    <% end %>
   </tbody>
 </table>
 
@@ -32,6 +40,9 @@
   }
   .core {
     font-weight: bold;
+  }
+  .variation {
+    text-align: right;
   }
   .vertical-label {
     writing-mode: vertical-rl;

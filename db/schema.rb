@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_17_225049) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_18_210142) do
+  create_table "charts", force: :cascade do |t|
+    t.integer "student_id", null: false
+    t.integer "figure_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "movement"
+    t.string "timing"
+    t.text "partnering"
+    t.index ["figure_id"], name: "index_charts_on_figure_id"
+    t.index ["student_id"], name: "index_charts_on_student_id"
+  end
+
   create_table "components", force: :cascade do |t|
     t.string "name"
     t.string "role"
@@ -62,6 +74,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_17_225049) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "charts", "figures"
+  add_foreign_key "charts", "students"
   add_foreign_key "lessons", "students"
   add_foreign_key "lessons", "teachers"
 end

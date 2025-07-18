@@ -19,7 +19,7 @@
         <td><%= s.email %></td>
         <td><%= s.phone %></td>
         <td><%= s.lessons.count %></td>
-        <td><%= s.full_name %></td>
+        <td><%= link_to s.full_name, student_path(s) %></td>
         <td><%= button_to "Edit", edit_student_path(s), method: :get, class: "btn" %></td>
         <td>
           <%= button_to "Delete", student_path(s), method: :delete, data: { confirm: "Are you sure?" }, class: "btn" %>

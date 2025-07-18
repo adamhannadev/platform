@@ -1,22 +1,7 @@
 <div id="<%= dom_id student %>">
-  <p>
-    <strong>Last name:</strong>
-    <%= student.last_name %>
-  </p>
-
-  <p>
-    <strong>First name:</strong>
-    <%= student.first_name %>
-  </p>
-
-  <p>
-    <strong>Phone:</strong>
-    <%= student.phone %>
-  </p>
-
-  <p>
-    <strong>Email:</strong>
-    <%= student.email %>
-  </p>
+  <div>
+    <h1><%= student.full_name %></h1>
+    <h2><%= "#{student.email} - #{student.phone}"%></h2>
+  </div>
 
 </div>
