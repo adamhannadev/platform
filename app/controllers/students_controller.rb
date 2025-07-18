@@ -1,5 +1,5 @@
 class StudentsController < ApplicationController
-  before_action :set_student, only: %i[ show edit update destroy ]
+  before_action :set_student, only: %i[ show edit update destroy charts]
 
   # GET /students or /students.json
   def index
@@ -55,6 +55,10 @@ class StudentsController < ApplicationController
       format.html { redirect_to students_url, notice: "Student was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def charts
+    @charts = @student.charts.joins(:figure).where(figures: {dance: params[:dance].capitalize})
   end
 
   private

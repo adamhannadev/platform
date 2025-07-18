@@ -1,0 +1,101 @@
+<div>
+    <table>
+      <thead>
+        <th></th>
+        <th>Level</th>
+        <th>Figure</th>
+        <th>Timing</th>
+        <th>Movement</th>
+        <th>Partnering</th>
+      </thead>
+      <tbody>
+        <% bronze_charts = @charts.select { |c| c.figure.level == "Bronze 1" } %>
+        <% other_charts = @charts.reject { |c| c.figure.level == "Bronze 1" } %>
+        <% bronze_count = bronze_charts.size %>
+        <% bronze_rendered = false %>
+        <% bronze_charts.each_with_index do |c, i| %>
+          <tr>
+            <% if !bronze_rendered %>
+              <td rowspan="<%= bronze_count %>" style="writing-mode: vertical-rl; font-weight: bold; background: #e0e7ef;">Bronze 1</td>
+              <% bronze_rendered = true %>
+            <% end %>
+            <td><%= c.figure.number %></td>
+            <td><%= c.figure.name %></td>
+            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="timing"><%= "X" if c.timing %></td>
+            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="movement"><%= "X" if c.movement %></td>
+            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="partnering"><%= "X" if c.partnering %></td>
+          </tr>
+        <% end %>
+        <% other_charts.each do |c| %>
+          <tr>
+            <td><%= c.figure.level %></td>
+            <td><%= c.figure.number %></td>
+            <td><%= c.figure.name %></td>
+            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="timing"><%= "X" if c.timing %></td>
+            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="movement"><%= "X" if c.movement %></td>
+            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="partnering"><%= "X" if c.partnering %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.toggle-cell').forEach(function(td) {
+  td.addEventListener('click', function() {
+    const chartId = td.dataset.chartId;
+    const field = td.dataset.field;
+    const current = td.textContent.trim() === "X";
+    // Toggle display
+    td.textContent = current ? "" : "X";
+    // Send AJAX request
+    fetch(`/charts/${chartId}/toggle`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({ field: field, value: !current })
+    });
+  });
+});
+</script>
+
+<style>
+  table {
+    border-collapse: collapse;
+    width: 50%;
+    margin: 1em auto 0 auto;
+    background: #fafafa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    border: 1px solid #bbb;
+    padding: 0.75em 1em;
+    text-align: center;
+    font-size: 1em;
+    transition: background 0.2s;
+  }
+  th {
+    background: #e0e7ef;
+    font-weight: 600;
+    color: #333;
+  }
+  tr:hover td {
+    background: #dbeafe;
+  }
+  .toggle-cell {
+    cursor: pointer;
+    font-weight: bold;
+    color: #2563eb;
+    background: #f3f4f6;
+    border-radius: 4px;
+  }
+  .toggle-cell:hover {
+    background: #bfdbfe;
+    color: #1e40af;
+  }
+</style>

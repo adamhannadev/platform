@@ -3,5 +3,5 @@
     <h1><%= student.full_name %></h1>
     <h2><%= "#{student.email} - #{student.phone}"%></h2>
   </div>
-
-</div>
+  
+  <%= link_to "Waltz", charts_path(student.id, "Waltz") %>

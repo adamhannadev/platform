@@ -17,5 +17,10 @@ Rails.application.routes.draw do
   get "teachers/:id/calendar" => "teachers#calendar", as: :teacher_calendar
 
   resources :students
+  get "students/:id/:dance" => "students#charts", as: :charts
+  
   resources :lessons
+
+  # Update the charts when clicked on students chart.
+  patch 'charts/:id/toggle', to: 'charts#toggle'
 end
