@@ -2,29 +2,16 @@
 
 <% content_for :title, "Figures" %>
 
-<h1>Figures</h1>
+<h1>Foxtrot Figures</h1>
 
 <table id="figures">
   <thead>
-    <th></th>
-    <th>Name</th>
-    <th>Variations</th>
+    <th>Core Figure</th>
   </thead>
   <tbody>
-
-    <% levels = ["Bronze 1", "Bronze 2", "Bronze 3", "Bronze 4"] %>
-    <% levels.each do |l| %>
-    <% bronze_figures = @figures.select { |f| f.level == l } %>
-    <% bronze_figures.each_with_index do |f, i| %>
-      <tr class="<%= 'core' if f.core %>">
-        <% if i == 0 %>
-          <td rowspan="<%= bronze_figures.size %>" class="vertical-label"><%= l %></td>
-        <% end %>
-        <td><%="#{f.number}. #{f.name}" if f.core %></td>
-        <td><%= "#{f.number}. #{f.name}" unless f.core %></td>
-      </tr>
-    <% end %>
-    <% end %>
+    <tr>
+      <td>something</td>
+    </tr>
   </tbody>
 </table>
 
@@ -32,6 +19,15 @@
 
 <style>
   #figures {
+    border: 1px solid black;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+    #figures th, #figures td {
+    border: 1px solid black;
+  }
+  #figures tr {
     border: 1px solid black;
   }
   .core {
@@ -42,5 +38,25 @@
     text-align: center;
     font-weight: bold;
     background: #f0f0f0;
+    border-radius: 20% 0% 0% 20%;
   }
 </style>
+
+
+<!-- <% levels = ["Bronze 1", "Bronze 2", "Bronze 3", "Bronze 4"] %>
+    <% levels.each do |l| %>
+    <% bronze_figures = @figures.select { |f| f.level == l } %>
+    <% bronze_figures.each_with_index do |f, i| %>
+      <tr class="<%= 'core' if f.core %>">
+        <% if i == 0 %>
+          <td rowspan="<%= bronze_figures.size %>" class="vertical-label"><%= l %></td>
+        <% end %>
+        <% if f.core %>
+          <td><%="#{f.number}. #{f.name}" %></td>
+        <% else %>
+          <td></td>
+          <td><%="#{f.number}. #{f.name}" %></td>
+        <% end %>
+      </tr>
+    <% end %>
+    <% end %> -->

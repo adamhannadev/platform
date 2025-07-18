@@ -3,7 +3,7 @@ class FiguresController < ApplicationController
 
   # GET /figures or /figures.json
   def index
-    @figures = Figure.all
+    @figures = Figure.where(dance: "Foxtrot")
   end
 
   # GET /figures/1 or /figures/1.json
