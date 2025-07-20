@@ -9,32 +9,20 @@
         <th>Partnering</th>
       </thead>
       <tbody>
-        <% bronze_charts = @charts.select { |c| c.figure.level == "Bronze 1" } %>
-        <% other_charts = @charts.reject { |c| c.figure.level == "Bronze 1" } %>
-        <% bronze_count = bronze_charts.size %>
-        <% bronze_rendered = false %>
-        <% bronze_charts.each_with_index do |c, i| %>
-          <tr>
-            <% if !bronze_rendered %>
-              <td rowspan="<%= bronze_count %>" style="writing-mode: vertical-rl; font-weight: bold; background: #e0e7ef;">Bronze 1</td>
-              <% bronze_rendered = true %>
-            <% end %>
-            <td><%= c.figure.number %></td>
-            <td><%= c.figure.name %></td>
-            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="timing"><%= "X" if c.timing %></td>
-            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="movement"><%= "X" if c.movement %></td>
-            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="partnering"><%= "X" if c.partnering %></td>
-          </tr>
-        <% end %>
-        <% other_charts.each do |c| %>
-          <tr>
-            <td><%= c.figure.level %></td>
-            <td><%= c.figure.number %></td>
-            <td><%= c.figure.name %></td>
-            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="timing"><%= "X" if c.timing %></td>
-            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="movement"><%= "X" if c.movement %></td>
-            <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="partnering"><%= "X" if c.partnering %></td>
-          </tr>
+        <% grouped = @charts.group_by { |c| c.figure.level } %>
+        <% grouped.each do |level, charts| %>
+          <% charts.each_with_index do |c, i| %>
+            <tr>
+              <% if i == 0 %>
+                <td rowspan="<%= charts.size %>" style="writing-mode: vertical-rl; font-weight: bold; background: #e0e7ef;"><%= level %></td>
+              <% end %>
+              <td><%= c.figure.number %></td>
+              <td><%= c.figure.name %></td>
+              <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="timing"><%= "X" if c.timing %></td>
+              <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="movement"><%= "X" if c.movement %></td>
+              <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="partnering"><%= "X" if c.partnering %></td>
+            </tr>
+          <% end %>
         <% end %>
       </tbody>
     </table>
