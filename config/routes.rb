@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :locations
+  resources :availabilities
   resources :figures
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -23,4 +25,9 @@ Rails.application.routes.draw do
 
   # Update the charts when clicked on students chart.
   patch 'charts/:id/toggle', to: 'charts#toggle'
+
+  resources :availabilities
+  post 'availabilities/bulk_create_teacher', to: 'availabilities#bulk_create_teacher', as: :bulk_create_teacher_availabilities
+  
+  resources :locations
 end

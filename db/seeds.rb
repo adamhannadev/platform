@@ -9,13 +9,17 @@
 #   end
 
 # Create Teachers
-teacher1 = Teacher.create!(first_name: "Alice", last_name: "Smith", email: "alice@example.com", phone: "1234567890")
-teacher2 = Teacher.create!(first_name: "Bob", last_name: "Johnson", email: "bob@example.com", phone: "0987654321")
+teacher1 = Teacher.create!(first_name: "Adam", last_name: "Hanna", email: "info@adamhannaballroom.com", phone: "250-480-9246")
+teacher2 = Teacher.create!(first_name: "Tyna", last_name: "Kottova", email: "tyna@adamhannaballroom.com", phone: "250-555-5555")
 
 # Create Students
-student1 = Student.create!(first_name: "Charlie", last_name: "Brown", email: "charlie@example.com", phone: "5551112222")
-student2 = Student.create!(first_name: "Dana", last_name: "White", email: "dana@example.com", phone: "5553334444")
+student1 = Student.create!(first_name: "Kami", last_name: "Norman", email: "adam.s.hanna@gmail.com", phone: "250-555-55555")
+student2 = Student.create!(first_name: "Linda", last_name: "Gould", email: "adamhannadev@gmail.com", phone: "250-555-5555")
 
 # Create Lessons
 Lesson.create!(start_time: DateTime.now + 1.day, student: student1, teacher: teacher1, plan: "Intro lesson")
 Lesson.create!(start_time: DateTime.now + 2.days, student: student2, teacher: teacher2, plan: "Advanced lesson")
+
+# Create Locations
+Location.create!(name: "Trinity", address: "2964 Tillicum Rd.", rate: 9.00)
+Location.create!(name: "St. Lukes", address: "52349 Luke Ave.", rate: 65.53)

@@ -1,0 +1,17 @@
+<!-- filepath: /app/views/availabilities/_bulk_form.html.erb -->
+<%= form_with url: bulk_create_teacher_availabilities_path, method: :post do |form| %>
+  <%= form.hidden_field :teacher_id, value: @teacher.id %>
+  <% Date::DAYNAMES.each_with_index do |day, i| %>
+    <div>
+      <strong><%= day %></strong><br>
+      <%= form.label "start_time_#{i}", "Start Time" %>
+      <%= form.time_field "start_time_#{i}" %>
+      <%= form.label "end_time_#{i}", "End Time" %>
+      <%= form.time_field "end_time_#{i}" %>
+      <%= form.label "available_#{i}", "Available?" %>
+      <%= form.check_box "available_#{i}", checked: true %>
+    </div>
+    <hr>
+  <% end %>
+  <%= form.submit "Create Availabilities for Next Month" %>
+<% end %>

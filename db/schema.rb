@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_21_041807) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_21_043317) do
+  create_table "availabilities", force: :cascade do |t|
+    t.date "available_on"
+    t.time "start_time"
+    t.time "end_time"
+    t.boolean "available"
+    t.string "available_for_type", null: false
+    t.integer "available_for_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["available_for_type", "available_for_id"], name: "index_availabilities_on_available_for"
+  end
+
   create_table "charts", force: :cascade do |t|
     t.integer "student_id", null: false
     t.integer "figure_id", null: false
@@ -44,6 +56,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_21_041807) do
     t.datetime "updated_at", null: false
     t.index ["student_id"], name: "index_lessons_on_student_id"
     t.index ["teacher_id"], name: "index_lessons_on_teacher_id"
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.float "rate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "students", force: :cascade do |t|

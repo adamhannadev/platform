@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  available_on: 2025-07-20
+  start_time: 2025-07-20 21:28:50
+  end_time: 2025-07-20 21:28:50
+  available: false
+  available_for: one
+  available_for_type: Available for
+
+two:
+  available_on: 2025-07-20
+  start_time: 2025-07-20 21:28:50
+  end_time: 2025-07-20 21:28:50
+  available: false
+  available_for: two
+  available_for_type: Available for

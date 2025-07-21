@@ -12,19 +12,11 @@
         <% grouped = @charts.group_by { |c| c.figure.level } %>
         <% grouped.each do |level, charts| %>
           <% charts.each_with_index do |c, i| %>
-<<<<<<< HEAD
-            <tr>
-              <% if i == 0 %>
-                <td rowspan="<%= charts.size %>" style="writing-mode: vertical-rl; font-weight: bold; background: #e0e7ef;"><%= level %></td>
-              <% end %>
-              <td><%= c.figure.number %></td>
-=======
             <tr class="<%= 'core' if c.figure.core %>">
               <% if i == 0 %>
                 <td rowspan="<%= charts.size %>" style="writing-mode: vertical-lr; font-weight: bold; background: #e0e7ef; text-align:center;"><%= level.upcase %></td>
               <% end %>
               <td style="<%= 'text-align:right;' unless c.figure.core %>"><%= c.figure.number %></td>
->>>>>>> syllabus
               <td><%= c.figure.name %></td>
               <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="timing"><%= "X" if c.timing %></td>
               <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="movement"><%= "X" if c.movement %></td>
