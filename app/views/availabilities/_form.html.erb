@@ -47,11 +47,17 @@
 <% end %>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", initAvailabilityForm);
+  document.addEventListener("turbo:load", initAvailabilityForm);
+
+  function initAvailabilityForm() {
+    var typeSelect = document.getElementById("available_for_type_select");
+    var idSelect = document.getElementById("available_for_id_select");
+    if (!typeSelect || !idSelect) return;
+
     function updateAvailableForIdOptions() {
-      var type = document.getElementById("available_for_type_select").value;
-      var idSelect = document.getElementById("available_for_id_select");
-      idSelect.innerHTML = ""; // Clear options
+      var type = typeSelect.value;
+      idSelect.innerHTML = "";
 
       var options = [];
       if (type === "Teacher") {
@@ -75,15 +81,12 @@
         idSelect.appendChild(option);
       });
 
-      // Set selected value if editing
       <% if availability.available_for_id.present? %>
         idSelect.value = "<%= availability.available_for_id %>";
       <% end %>
     }
 
-    document.getElementById("available_for_type_select").addEventListener("change", updateAvailableForIdOptions);
-
-    // Initialize on page load
+    typeSelect.addEventListener("change", updateAvailableForIdOptions);
     updateAvailableForIdOptions();
-  });
+  }
 </script>
