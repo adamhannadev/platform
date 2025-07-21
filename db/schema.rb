@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_18_210142) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_21_041807) do
   create_table "charts", force: :cascade do |t|
     t.integer "student_id", null: false
     t.integer "figure_id", null: false
@@ -21,16 +21,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_18_210142) do
     t.text "partnering"
     t.index ["figure_id"], name: "index_charts_on_figure_id"
     t.index ["student_id"], name: "index_charts_on_student_id"
-  end
-
-  create_table "components", force: :cascade do |t|
-    t.string "name"
-    t.string "role"
-    t.string "timing"
-    t.text "movement"
-    t.text "partnering"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "figures", force: :cascade do |t|
