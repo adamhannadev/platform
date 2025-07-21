@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
-  resources :locations
-  resources :availabilities
+  resources :locations do
+    resources :availabilities, only: [:index, :new, :create] do
+      get 'month/:month', on: :collection, action: :index, as: :month
+    end
+  end
   resources :figures
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -15,8 +18,11 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "teachers#index"
 
-  resources :teachers
-  get "teachers/:id/calendar" => "teachers#calendar", as: :teacher_calendar
+  resources :teachers do
+        resources :availabilities, only: [:index, :new, :create] do
+      get 'month/:month', on: :collection, action: :index, as: :month
+    end
+  end
 
   resources :students
   get "students/:id/:dance" => "students#charts", as: :charts
@@ -27,8 +33,8 @@ Rails.application.routes.draw do
   patch 'charts/:id/toggle', to: 'charts#toggle'
 
   resources :availabilities
-  post 'availabilities/bulk_create_teacher', to: 'availabilities#bulk_create_teacher', as: :bulk_create_teacher_availabilities
-  get "availabilities/month/:month" => "availabilities#index", as: :availabilities_month
-  
-  resources :locations
+  # post 'availabilities/bulk_create_teacher', to: 'availabilities#bulk_create_teacher', as: :bulk_create_teacher_availabilities
+  # get "availabilities/month/:month" => "availabilities#index", as: :availabilities_month
+
+
 end

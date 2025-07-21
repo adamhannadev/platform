@@ -2,17 +2,33 @@ class AvailabilitiesController < ApplicationController
   before_action :set_availability, only: %i[ show edit update destroy ]
 
   # GET /availabilities or /availabilities.json
-  def index
-  if params[:month]
-    date = Date.parse(params[:month] + "-01")
-  else
-    date = Date.today
-  end
-  @first_day = date.beginning_of_month
-  @last_day = date.end_of_month
-  @days = (@first_day..@last_day).to_a
-  @availabilities = Availability.where(available_on: @first_day..@last_day)
-
+def index
+    if params[:teacher_id]
+      @teacher = Teacher.find(params[:teacher_id])
+      @first_day = params[:month] ? Date.parse(params[:month] + "-01") : Date.today.beginning_of_month
+      @last_day = @first_day.end_of_month
+      @days = (@first_day..@last_day).to_a
+      @availabilities = Availability.where(
+        available_for_type: "Teacher",
+        available_for_id: @teacher.id,
+        available_on: @first_day..@last_day
+      )
+    elsif params[:location_id]
+      @location = Location.find(params[:location_id])
+      @first_day = params[:month] ? Date.parse(params[:month] + "-01") : Date.today.beginning_of_month
+      @last_day = @first_day.end_of_month
+      @days = (@first_day..@last_day).to_a
+      @availabilities = Availability.where(
+        available_for_type: "Location",
+        available_for_id: @location.id,
+        available_on: @first_day..@last_day
+      )
+    else
+      @first_day = params[:month] ? Date.parse(params[:month] + "-01") : Date.today.beginning_of_month
+      @last_day = @first_day.end_of_month
+      @days = (@first_day..@last_day).to_a
+      @availabilities = Availability.where(available_on: @first_day..@last_day)
+    end
   end
 
   # GET /availabilities/1 or /availabilities/1.json
@@ -66,24 +82,24 @@ class AvailabilitiesController < ApplicationController
     end
   end
 
-  def bulk_create_teacher
-  teacher = Teacher.find(params[:teacher_id])
-  start_date = (Date.today + 1.month).beginning_of_month
-  end_date = start_date + 1.month
+#   def bulk_create_teacher
+#   teacher = Teacher.find(params[:teacher_id])
+#   start_date = (Date.today + 1.month).beginning_of_month
+#   end_date = start_date + 1.month
 
-  (start_date..end_date).each do |date|
-    weekday = date.wday # 0 = Sunday, 1 = Monday, ...
-    if params["available_#{weekday}"] == "1"
-      teacher.availabilities.create!(
-        available_on: date,
-        start_time: params["start_time_#{weekday}"],
-        end_time: params["end_time_#{weekday}"],
-        available: true
-      )
-    end
-  end
-  redirect_to teacher_path(teacher), notice: "Availabilities created for next month."
-end
+#   (start_date..end_date).each do |date|
+#     weekday = date.wday # 0 = Sunday, 1 = Monday, ...
+#     if params["available_#{weekday}"] == "1"
+#       teacher.availabilities.create!(
+#         available_on: date,
+#         start_time: params["start_time_#{weekday}"],
+#         end_time: params["end_time_#{weekday}"],
+#         available: true
+#       )
+#     end
+#   end
+#   redirect_to teacher_path(teacher), notice: "Availabilities created for next month."
+# end
 
   private
     # Use callbacks to share common setup or constraints between actions.
