@@ -4,6 +4,31 @@
 
 <h1>Availabilities</h1>
 
+<%= link_to "Previous Month", availabilities_month_path((@first_day - 1.month).strftime("%Y-%m")) %> |
+<%= link_to "Next Month", availabilities_month_path((@first_day + 1.month).strftime("%Y-%m")) %>
+<table>
+  <tr>
+    <% Date::ABBR_DAYNAMES.each do |day| %>
+      <th><%= day %></th>
+    <% end %>
+  </tr>
+  <% @days.in_groups_of(7, false) do |week| %>
+    <tr>
+      <% week.each do |date| %>
+        <td style="vertical-align: top;">
+          <strong><%= date.day %></strong>
+          <% @availabilities.select { |a| a.available_on == date }.each do |a| %>
+            <div>
+              <%= a.available_for_type %> <%= a.available_for_id %><br>
+              <%= a.start_time.strftime("%H:%M") %> - <%= a.end_time.strftime("%H:%M") %>
+            </div>
+          <% end %>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
+
 <div id="availabilities">
   <% @availabilities.each do |availability| %>
     <%= render availability %>

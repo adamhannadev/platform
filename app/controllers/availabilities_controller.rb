@@ -3,7 +3,16 @@ class AvailabilitiesController < ApplicationController
 
   # GET /availabilities or /availabilities.json
   def index
-    @availabilities = Availability.all
+  if params[:month]
+    date = Date.parse(params[:month] + "-01")
+  else
+    date = Date.today
+  end
+  @first_day = date.beginning_of_month
+  @last_day = date.end_of_month
+  @days = (@first_day..@last_day).to_a
+  @availabilities = Availability.where(available_on: @first_day..@last_day)
+
   end
 
   # GET /availabilities/1 or /availabilities/1.json

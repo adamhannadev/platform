@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
   resources :availabilities
   post 'availabilities/bulk_create_teacher', to: 'availabilities#bulk_create_teacher', as: :bulk_create_teacher_availabilities
+  get "availabilities/month/:month" => "availabilities#index", as: :availabilities_month
   
   resources :locations
 end
