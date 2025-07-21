@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_21_043317) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_21_170604) do
   create_table "availabilities", force: :cascade do |t|
     t.date "available_on"
     t.time "start_time"
@@ -54,6 +54,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_21_043317) do
     t.text "plan"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "location_id", null: false
+    t.index ["location_id"], name: "index_lessons_on_location_id"
     t.index ["student_id"], name: "index_lessons_on_student_id"
     t.index ["teacher_id"], name: "index_lessons_on_teacher_id"
   end
@@ -86,6 +88,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_21_043317) do
 
   add_foreign_key "charts", "figures"
   add_foreign_key "charts", "students"
+  add_foreign_key "lessons", "locations"
   add_foreign_key "lessons", "students"
   add_foreign_key "lessons", "teachers"
 end

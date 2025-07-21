@@ -10,6 +10,7 @@
     <th>Teacher</th>
     <th>Student</th>
     <th>Plan</th>
+    <th>Location</th>
     <th></th>
     <th></th>
   </thead>
@@ -20,6 +21,7 @@
         <td><%= l.student.full_name %></td>
         <td><%= l.teacher.full_name %></td>
         <td><%= l.plan %></td>
+        <td><%= l.location.name %></td>
         <td><%= button_to "Edit", edit_lesson_path(l), method: :get, class: "btn" %></td>
         <td>
           <%= button_to "Delete", lesson_path(l), method: :delete, data: { confirm: "Are you sure?" }, class: "btn" %>

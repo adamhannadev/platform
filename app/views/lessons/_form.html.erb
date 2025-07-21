@@ -32,6 +32,11 @@
   </div>
 
   <div>
+    <%= form.label :location_id %>
+    <%= form.collection_select :location_id, Location.all, :id, :name, prompt: "Select a location" %>
+  </div>
+
+  <div>
     <%= form.submit %>
   </div>
 <% end %>
