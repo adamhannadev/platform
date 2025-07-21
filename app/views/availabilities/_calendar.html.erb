@@ -11,7 +11,7 @@
           <strong><%= date.day %></strong>
           <% @availabilities.select { |a| a.available_on == date }.each do |a| %>
             <div>
-              <%= a.available_for_type %> <%= a.available_for_id %><br>
+              <%= link_to a.available_for_type, availability_path(a) %> <%= a.available_for_id %><br>
               <%= a.start_time.strftime("%H:%M") %> - <%= a.end_time.strftime("%H:%M") %>
             </div>
           <% end %>

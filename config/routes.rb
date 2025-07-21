@@ -1,10 +1,4 @@
 Rails.application.routes.draw do
-  resources :locations do
-    resources :availabilities, only: [:index, :new, :create] do
-      get 'month/:month', on: :collection, action: :index, as: :month
-    end
-  end
-  resources :figures
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -24,6 +18,12 @@ Rails.application.routes.draw do
     end
   end
 
+    resources :locations do
+    resources :availabilities, only: [:index, :new, :create] do
+      get 'month/:month', on: :collection, action: :index, as: :month
+    end
+  end
+
   resources :students
   get "students/:id/:dance" => "students#charts", as: :charts
   
@@ -34,7 +34,8 @@ Rails.application.routes.draw do
 
   resources :availabilities
   # post 'availabilities/bulk_create_teacher', to: 'availabilities#bulk_create_teacher', as: :bulk_create_teacher_availabilities
-  # get "availabilities/month/:month" => "availabilities#index", as: :availabilities_month
+  get "availabilities/month/:month" => "availabilities#index", as: :availabilities_month
 
+  resources :figures
 
 end
