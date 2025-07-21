@@ -2,21 +2,29 @@
     <table>
       <thead>
         <th></th>
-        <th>Level</th>
-        <th>Figure</th>
-        <th>Timing</th>
-        <th>Movement</th>
-        <th>Partnering</th>
+        <th>LEVEL</th>
+        <th>FIGURE</th>
+        <th>T</th>
+        <th>M</th>
+        <th>P</th>
       </thead>
       <tbody>
         <% grouped = @charts.group_by { |c| c.figure.level } %>
         <% grouped.each do |level, charts| %>
           <% charts.each_with_index do |c, i| %>
+<<<<<<< HEAD
             <tr>
               <% if i == 0 %>
                 <td rowspan="<%= charts.size %>" style="writing-mode: vertical-rl; font-weight: bold; background: #e0e7ef;"><%= level %></td>
               <% end %>
               <td><%= c.figure.number %></td>
+=======
+            <tr class="<%= 'core' if c.figure.core %>">
+              <% if i == 0 %>
+                <td rowspan="<%= charts.size %>" style="writing-mode: vertical-lr; font-weight: bold; background: #e0e7ef; text-align:center;"><%= level.upcase %></td>
+              <% end %>
+              <td style="<%= 'text-align:right;' unless c.figure.core %>"><%= c.figure.number %></td>
+>>>>>>> syllabus
               <td><%= c.figure.name %></td>
               <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="timing"><%= "X" if c.timing %></td>
               <td class="toggle-cell" data-chart-id="<%= c.id %>" data-field="movement"><%= "X" if c.movement %></td>
@@ -63,7 +71,6 @@ document.querySelectorAll('.toggle-cell').forEach(function(td) {
   th, td {
     border: 1px solid #bbb;
     padding: 0.75em 1em;
-    text-align: center;
     font-size: 1em;
     transition: background 0.2s;
   }
@@ -81,9 +88,16 @@ document.querySelectorAll('.toggle-cell').forEach(function(td) {
     color: #2563eb;
     background: #f3f4f6;
     border-radius: 4px;
+    width: 2em;
+    text-align:center;
   }
   .toggle-cell:hover {
     background: #bfdbfe;
     color: #1e40af;
+  }
+  .core {
+    font-weight: 900;
+    background-color: aliceblue;
+    text-align: center;
   }
 </style>
