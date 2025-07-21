@@ -7,5 +7,8 @@ Areas:
 Scheduling - Booking and keeping track of private lessons.
 
 
+Todo:
+    - Add enrollment function to add figures to a student's chart.
+
 
 
