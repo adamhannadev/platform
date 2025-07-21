@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   root "teachers#index"
 
   resources :teachers do
+      get 'schedule', on: :member
         resources :availabilities, only: [:index, :new, :create] do
       get 'month/:month', on: :collection, action: :index, as: :month
     end

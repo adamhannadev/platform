@@ -58,11 +58,33 @@ class TeachersController < ApplicationController
   end
 
 
-  def calendar
-    week_start = params[:week] ? Date.parse(params[:week]) : Date.current.beginning_of_week
-    week_end = week_start.end_of_week
-    @week_start = week_start
-    @lessons = @teacher.lessons.where(start_time: week_start..week_end)
+  # def calendar
+  #   week_start = params[:week] ? Date.parse(params[:week]) : Date.current.beginning_of_week
+  #   week_end = week_start.end_of_week
+  #   @week_start = week_start
+  #   @lessons = @teacher.lessons.where(start_time: week_start..week_end)
+  # end
+
+  def schedule
+    @teacher = Teacher.find(params[:id])
+    @date = Date.today-1
+
+    availabilities = Availability.where(
+      available_for_type: "Teacher",
+      available_for_id: @teacher.id,
+      available_on: @date,
+      available: true
+    )
+
+    @blocks = []
+    availabilities.each do |a|
+      start_time = a.start_time
+      end_time = a.end_time
+      while start_time + 45.minutes <= end_time
+        @blocks << start_time
+        start_time += 45.minutes
+      end
+    end
   end
   
   private

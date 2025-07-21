@@ -1,0 +1,10 @@
+<!-- filepath: /app/views/teachers/schedule.html.erb -->
+<h2>Schedule for <%= @teacher.full_name %> on <%= @date.strftime("%A, %B %d") %></h2>
+<ul>
+  <% @blocks.each do |block| %>
+    <li>
+      <%= block.strftime("%H:%M") %> -
+      <%= (block + 45.minutes).strftime("%H:%M") %>
+    </li>
+  <% end %>
+</ul>
