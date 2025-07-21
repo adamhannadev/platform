@@ -32,11 +32,58 @@
   </div>
 
   <div>
-    <%= form.label :available_for_id, style: "display: block" %>
-    <%= form.text_field :available_for_id %>
+    <%= form.label :available_for_type, "Available For", style: "display: block" %>
+    <%= form.select :available_for_type, options_for_select([["Teacher", "Teacher"], ["Location", "Location"]], availability.available_for_type), {}, { id: "available_for_type_select" } %>
+  </div>
+
+  <div>
+    <%= form.label :available_for_id, "Select", style: "display: block" %>
+    <%= form.select :available_for_id, [], {}, { id: "available_for_id_select" } %>
   </div>
 
   <div>
     <%= form.submit %>
   </div>
 <% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    function updateAvailableForIdOptions() {
+      var type = document.getElementById("available_for_type_select").value;
+      var idSelect = document.getElementById("available_for_id_select");
+      idSelect.innerHTML = ""; // Clear options
+
+      var options = [];
+      if (type === "Teacher") {
+        options = [
+          <% Teacher.all.each do |teacher| %>
+            { value: "<%= teacher.id %>", text: "<%= teacher.full_name %>" },
+          <% end %>
+        ];
+      } else if (type === "Location") {
+        options = [
+          <% Location.all.each do |location| %>
+            { value: "<%= location.id %>", text: "<%= location.name %>" },
+          <% end %>
+        ];
+      }
+
+      options.forEach(function(opt) {
+        var option = document.createElement("option");
+        option.value = opt.value;
+        option.text = opt.text;
+        idSelect.appendChild(option);
+      });
+
+      // Set selected value if editing
+      <% if availability.available_for_id.present? %>
+        idSelect.value = "<%= availability.available_for_id %>";
+      <% end %>
+    }
+
+    document.getElementById("available_for_type_select").addEventListener("change", updateAvailableForIdOptions);
+
+    // Initialize on page load
+    updateAvailableForIdOptions();
+  });
+</script>

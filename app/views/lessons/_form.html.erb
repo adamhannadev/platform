@@ -18,12 +18,14 @@
 
   <div>
     <%= form.label :student_id, style: "display: block" %>
-    <%= form.text_field :student_id %>
+    <%= form.collection_select :student_id, Student.all, :id, :full_name, prompt: "Select a student" %>
+ 
   </div>
 
   <div>
     <%= form.label :teacher_id, style: "display: block" %>
-    <%= form.text_field :teacher_id %>
+     <%= form.collection_select :teacher_id, Teacher.all, :id, :full_name, prompt: "Select a teacher" %>
+ 
   </div>
 
   <div>
