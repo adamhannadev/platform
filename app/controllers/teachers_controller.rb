@@ -67,7 +67,7 @@ class TeachersController < ApplicationController
 
   def schedule
     @teacher = Teacher.find(params[:id])
-    @date = Date.today-1
+    @date = params[:date] ? Date.parse(params[:date]) : Date.today
 
     availabilities = Availability.where(
       available_for_type: "Teacher",

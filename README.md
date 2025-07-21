@@ -7,9 +7,10 @@ Areas:
 
 Todo:
     - Add enrollment function to add figures to a student's chart.
-    - Add buttons to change the date of teacher's schedule view.
+
     - Filter out currently booked lesson times.
     - Add a link to book a lesson from each block.
+        -Reconcile available_on field not being available to the block.
 
 
 

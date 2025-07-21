@@ -12,7 +12,10 @@ class LessonsController < ApplicationController
 
   # GET /lessons/new
   def new
-    @lesson = Lesson.new
+  @lesson = Lesson.new(
+    start_time: params[:start_time],
+    teacher_id: params[:teacher_id]
+  )
   end
 
   # GET /lessons/1/edit
