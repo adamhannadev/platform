@@ -8,13 +8,16 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+user1 = User.create!(email: "adamhannadev@gmail.com", password: "password", role: "Teacher")
+user2 = User.create!(email: "adamhannadance@gmail.com", password: "password", role: "Student")
+
 # Create Teachers
-teacher1 = Teacher.create!(first_name: "Adam", last_name: "Hanna", email: "info@adamhannaballroom.com", phone: "250-480-9246")
-teacher2 = Teacher.create!(first_name: "Tyna", last_name: "Kottova", email: "tyna@adamhannaballroom.com", phone: "250-555-5555")
+teacher1 = Teacher.create!(first_name: "Adam", last_name: "Hanna", email: "adamhannadev@gmail.com", phone: "250-480-9246", user: user1)
+teacher2 = Teacher.create!(first_name: "Tyna", last_name: "Kottova", email: "adam.s.hanna@gmail.com", phone: "250-555-5555")
 
 # Create Students
-student1 = Student.create!(first_name: "Kami", last_name: "Norman", email: "adam.s.hanna@gmail.com", phone: "250-555-55555")
-student2 = Student.create!(first_name: "Linda", last_name: "Gould", email: "adamhannadev@gmail.com", phone: "250-555-5555")
+student1 = Student.create!(first_name: "Kami", last_name: "Norman", email: "adamhannadance@gmail.com", phone: "250-555-55555", user: user2)
+student2 = Student.create!(first_name: "Linda", last_name: "Gould", email: "info@adamhannaballroom.com", phone: "250-555-5555")
 
 # Create Locations
 location1 = Location.create!(name: "Trinity", address: "2964 Tillicum Rd.", rate: 9.00)

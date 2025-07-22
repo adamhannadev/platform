@@ -54,6 +54,7 @@ group :development do
   gem "hirb"
   # Highlight the fine-grained location where an error occurred [https://github.com/ruby/error_highlight]
   gem "error_highlight", ">= 0.7.0", platforms: [:ruby]
+  gem 'devise'
 end
 
 group :test do
