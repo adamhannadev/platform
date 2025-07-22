@@ -27,3 +27,6 @@ location2 = Location.create!(name: "St. Lukes", address: "52349 Luke Ave.", rate
 timenow = Time.now
 av1 = location1.availabilities.create!(start_time: timenow, end_time: timenow + 5.hours, available: true)
 av1 = teacher1.availabilities.create!(start_time: timenow, end_time: timenow + 5.hours, available: true)
+
+# Create Lessons
+lesson1 = Lesson.create(start_time: timenow, duration: 45, student: student1, teacher: teacher1, location: location1, plan: "Review Waltz and introduce Left Box Turn")
