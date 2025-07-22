@@ -19,7 +19,7 @@ class Lesson < ApplicationRecord
       available_for_id: resource.id,
       available: true
     ).where(
-      "start_time <= ? AND end_time > ?", start_time, start_time
+      "start_time <= ? AND end_time > ?", start_time.in_time_zone("Pacific Time (US & Canada)"), start_time.in_time_zone("Pacific Time (US & Canada)")
     ).exists?
   end
 end

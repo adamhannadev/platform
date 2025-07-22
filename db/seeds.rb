@@ -22,3 +22,8 @@ student2 = Student.create!(first_name: "Linda", last_name: "Gould", email: "info
 # Create Locations
 location1 = Location.create!(name: "Trinity", address: "2964 Tillicum Rd.", rate: 9.00)
 location2 = Location.create!(name: "St. Lukes", address: "52349 Luke Ave.", rate: 65.53)
+
+# Create Aavailabilities
+timenow = Time.zone.now
+av1 = location1.availabilities.create!(start_time: timenow, end_time: timenow + 5.hours, available: true)
+av1 = teacher1.availabilities.create!(start_time: timenow, end_time: timenow, available: true)
