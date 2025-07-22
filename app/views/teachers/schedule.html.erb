@@ -1,14 +1,12 @@
 <!-- filepath: /app/views/teachers/schedule.html.erb -->
 
- <%= link_to "Previous Day", schedule_teacher_path(@teacher, date: @date-1) %>
- <%= link_to "Next Day", schedule_teacher_path(@teacher, date: @date+1) %>
+<%= link_to "Previous Day", schedule_teacher_path(@teacher, date: @date - 1) %>
+<%= link_to "Next Day", schedule_teacher_path(@teacher, date: @date + 1) %>
 <h2>Schedule for <%= @teacher.full_name %> on <%= @date.strftime("%A, %B %d") %></h2>
 <ul>
   <% @blocks.each do |block| %>
     <li>
-        <% 
-      <%= link_to block.strftime("%H:%M"), new_lesson_path(start_time: available_on, teacher_id: @teacher.id) %> -
-      <%= (block + 45.minutes).strftime("%H:%M") %>
+      <%= link_to "#{block.strftime("%H:%M")} - #{(block + 45.minutes).strftime("%H:%M")}", new_lesson_path(start_time: block, teacher_id: @teacher.id) %>
     </li>
   <% end %>
 </ul>

@@ -72,7 +72,6 @@ class TeachersController < ApplicationController
     availabilities = Availability.where(
       available_for_type: "Teacher",
       available_for_id: @teacher.id,
-      available_on: @date,
       available: true
     )
 

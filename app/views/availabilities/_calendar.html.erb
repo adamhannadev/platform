@@ -9,9 +9,9 @@
       <% week.each do |date| %>
         <td style="vertical-align: top;">
           <strong><%= date.day %></strong>
-          <% @availabilities.select { |a| a.available_on == date }.each do |a| %>
+          <% @availabilities.select { |a| a.start_time.to_date == date }.each do |a| %>
             <div>
-              <%= link_to a.available_for_type, availability_path(a) %> <%= a.available_for_id %><br>
+              <%= link_to "#{a.available_for_type}/#{a.available_for_id}", availability_path(a) %><br>
               <%= a.start_time.strftime("%H:%M") %> - <%= a.end_time.strftime("%H:%M") %>
             </div>
           <% end %>

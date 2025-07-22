@@ -14,15 +14,12 @@ class Lesson < ApplicationRecord
   end
 
   def available_for?(resource)
-    availabilities = Availability.where(
-      available_for: resource,
-      available_on: start_time.to_date,
+    Availability.where(
+      available_for_type: resource.class.name,
+      available_for_id: resource.id,
       available: true
-    )
-
-    lesson_time = start_time.strftime("%H:%M")
-    availabilities.any? do |a|
-      a.start_time.strftime("%H:%M") <= lesson_time && a.end_time.strftime("%H:%M") > lesson_time
-    end
+    ).where(
+      "start_time <= ? AND end_time > ?", start_time, start_time
+    ).exists?
   end
 end
