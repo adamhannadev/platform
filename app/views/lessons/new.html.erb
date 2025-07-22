@@ -1,11 +1,23 @@
+<!-- filepath: /home/adam/projects/platform/app/views/lessons/new.html.erb -->
 <% content_for :title, "New lesson" %>
 
 <h1>New lesson</h1>
 
-<%= render "form", lesson: @lesson %>
+<div id="booking-flow" data-controller="booking">
+  <!-- Step 1: Choose location -->
+  <h2>Choose Location</h2>
+  <select id="location-select" data-booking-target="location" data-action="change->booking#selectLocation">
+    <option value="">Select...</option>
+    <% @locations.each do |loc| %>
+      <option value="<%= loc.id %>"><%= loc.name %></option>
+    <% end %>
+  </select>
+  <div id="calendar-step" data-booking-target="calendar"></div>
+  <div id="teacher-step" data-booking-target="teacher"></div>
+  <div id="timeslot-step" data-booking-target="timeslot"></div>
+</div>
 
 <br>
-
 <div>
   <%= link_to "Back to lessons", lessons_path %>
 </div>

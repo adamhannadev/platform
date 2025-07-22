@@ -1,0 +1,16 @@
+<!-- filepath: /home/adam/projects/platform/app/views/lessons/_available_days.turbo_stream.erb -->
+<turbo-stream target="calendar-step" action="replace">
+  <template>
+    <h2>Choose a Day</h2>
+    <div>
+      <% days.each do |day| %>
+        <button class="btn btn-accent m-1"
+          data-action="click->booking#selectDay"
+          data-date="<%= day %>"
+          data-location-id="<%= params[:location_id] %>">
+          <%= day.strftime("%b %d") %>
+        </button>
+      <% end %>
+    </div>
+  </template>
+</turbo-stream>
