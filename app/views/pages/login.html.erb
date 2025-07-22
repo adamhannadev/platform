@@ -1,0 +1,12 @@
+
+
+<div class="align-items-center">
+<h1 class="accent">Login</h1>
+    <% if user_signed_in? %>
+      Logged in as <%= current_user.email %>
+      <%= link_to 'Logout', destroy_user_session_path, class: "btn btn-accent", data: {turbo_method: :delete} %>
+    <% else %>
+      <%= link_to 'Login', new_user_session_path, class: "btn btn-accent" %>
+      <%= link_to 'Sign up', new_user_registration_path, class: "btn btn-accent" %>
+    <% end %>
+</div>
