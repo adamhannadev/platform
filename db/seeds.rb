@@ -8,6 +8,38 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+require 'roo'
+
+# Create Figures
+sm = Roo::Spreadsheet.open('br_smooth.xlsx')
+puts "The sheets are: #{sm.sheets}"
+sm.each_with_pagename do |name, sheet|
+    puts "#{name}"
+    sm.each_row_streaming(offset: 0) do |row|
+    Figure.create!(
+    name: row[2]&.cell_value,
+    dance: name,
+    number: row[1]&.cell_value,
+    bars: row[3]&.cell_value,
+    components: row[4]&.cell_value,
+    core: row[0]&.cell_value,
+    level: row[5]&.cell_value
+    )
+    end
+end
+
+# Create Students
+st = Roo::Spreadsheet.open('student_list.xlsx')
+    st.each_row_streaming(offset: 0) do |row|
+        Student.find_or_create_by!(email: row[2].cell_value) do |s|
+            s.first_name = row[0].cell_value
+            s.last_name = row[1].cell_value
+            s.email = row[2]&.cell_value
+            s.phone = row[3]&.cell_value
+        end
+    end
+
+
 user1 = User.create!(email: "adamhannadev@gmail.com", password: "password", role: "Teacher")
 user2 = User.create!(email: "adamhannadance@gmail.com", password: "password", role: "Student")
 
