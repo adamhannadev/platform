@@ -78,23 +78,32 @@ class LessonsController < ApplicationController
         block_time += 45.minutes
       end
     end
-    booked = Lesson.where(teacher: teacher, location: location, start_time: date.beginning_of_day..date.end_of_day).pluck(:start_time)
+    booked = Lesson.where(
+      teacher: teacher,
+      location: location,
+      start_time: date.beginning_of_day..date.end_of_day
+    ).pluck(:start_time).map { |t| t.to_s }
+
+    timeslots = timeslots.map { |t| t.to_s }
     timeslots -= booked
     render partial: "available_timeslots", locals: { timeslots: timeslots }
   end
 
   def create
     lesson = Lesson.new(
-      student_id: current_user.student,
+      student_id: current_user.student.id,
       teacher_id: params[:teacher_id],
       location_id: params[:location_id],
       start_time: params[:start_time],
       duration: 45
     )
+
     if lesson.save
+      puts lesson.inspect
       render turbo_stream: turbo_stream.replace("timeslot-step", partial: "lessons/booking_success")
     else
-      render turbo_stream: turbo_stream.replace("timeslot-step", partial: "lessons/booking_error", locals: { errors: lesson.errors.full_messages })
+      puts lesson.errors.full_messages.inspect  # This will output errors to the terminal
+      head :unprocessable_entity                # Or use head to return a status without rendering a partial
     end
   end
 

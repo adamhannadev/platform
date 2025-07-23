@@ -9,7 +9,7 @@
           data-teacher-id="<%= params[:teacher_id] %>"
           data-location-id="<%= params[:location_id] %>"
           data-start-time="<%= slot %>">
-          <%= slot.strftime("%H:%M") %>
+          <%= Time.zone.parse(slot).strftime("%I:%M %p") %>
         </button>
       <% end %>
     </div>
