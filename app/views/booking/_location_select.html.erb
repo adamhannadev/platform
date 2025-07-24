@@ -2,7 +2,7 @@
 <turbo-frame id="booking-flow">
   <div class="card shadow-sm p-4">
     <h2 class="mb-4 text-center">Choose Location</h2>
-    <%= form_with url: available_days_lessons_path, method: :get, data: { turbo_frame: "booking-flow" }, html: { class: "mb-3" } do %>
+    <%= form_with url: available_days_booking_index_path, method: :get, data: { turbo_frame: "booking-flow" }, html: { class: "mb-3" } do %>
       <div class="mb-3">
         <label for="location_id" class="form-label fw-bold">Location</label>
         <select name="location_id" id="location_id" class="form-select form-select-lg" required>

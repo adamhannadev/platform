@@ -31,13 +31,7 @@ Rails.application.routes.draw do
   resources :students
   get "students/:id/:dance" => "students#charts", as: :charts
   
-  resources :lessons do
-  collection do
-    get :available_days
-    get :available_teachers
-    get :available_timeslots
-  end
-end
+  resources :lessons
 
   # Update the charts when clicked on students chart.
   patch 'charts/:id/toggle', to: 'charts#toggle'
@@ -47,5 +41,13 @@ end
   get "availabilities/month/:month" => "availabilities#index", as: :availabilities_month
 
   resources :figures
+
+  resources :booking, only: [:index, :new, :create] do
+    collection do
+      get :available_days
+      get :available_teachers
+      get :available_timeslots
+    end
+  end
 
 end

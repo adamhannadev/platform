@@ -1,12 +1,12 @@
 <turbo-frame id="booking-flow">
   <div class="card shadow-sm p-4">
-    <h2 class="mb-4 text-center">Choose an Instructor</h2>
+    <h2 class="mb-4 text-center">Choose a Day</h2>
     <div class="d-flex flex-wrap gap-2 justify-content-center mb-3">
-      <% teachers.each do |teacher| %>
-        <%= button_to teacher.full_name,
-          available_timeslots_lessons_path,
+      <% days.each do |day| %>
+        <%= button_to day.strftime("%A, %b %d"),
+          available_teachers_booking_index_path,
           method: :get,
-          params: { location_id: location.id, date: date, teacher_id: teacher.id },
+          params: { location_id: location.id, date: day },
           form: { data: { turbo_frame: "booking-flow" }, class: "d-inline" },
           class: "btn btn-outline-primary btn-lg" %>
       <% end %>
