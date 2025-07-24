@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root to: "pages#login"
+  get "test_message", to: "pages#test_message"
 
   resources :teachers do
       get 'schedule', on: :member
