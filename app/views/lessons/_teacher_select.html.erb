@@ -1,0 +1,14 @@
+<turbo-frame id="booking-flow">
+<h2>Choose an Instructor</h2>
+<%= form_with url: available_timeslots_lessons_path, method: :get, data: { turbo_frame: "booking-flow" } do %>
+  <input type="hidden" name="location_id" value="<%= location.id %>">
+  <input type="hidden" name="date" value="<%= date %>">
+  <select name="teacher_id" required>
+    <option value="">Select an instructor...</option>
+    <% teachers.each do |teacher| %>
+      <option value="<%= teacher.id %>"><%= teacher.full_name %></option>
+    <% end %>
+  </select>
+  <%= submit_tag "Next", class: "btn btn-primary" %>
+<% end %>
+</turbo-frame>

@@ -43,32 +43,33 @@ class LessonsController < ApplicationController
   end
 
   def available_days
-    location = Location.find(params[:location_id])
-    availabilities = location.availabilities.where(available: true)
-    days = availabilities.map { |a| a.start_time.to_date }.uniq
-    render partial: "available_days", locals: { days: days }
+    @location = Location.find(params[:location_id])
+    availabilities = @location.availabilities.where(available: true)
+    @days = availabilities.map { |a| a.start_time.to_date }.uniq
+    render partial: "calendar", locals: { location: @location, days: @days }
   end
 
   def available_teachers
-    date = Date.parse(params[:date])
+    @location = Location.find(params[:location_id])
+    @date = Date.parse(params[:date])
     teacher_ids = Availability.where(
       available_for_type: "Teacher",
       available: true,
-      start_time: date.beginning_of_day..date.end_of_day
+      start_time: @date.beginning_of_day..@date.end_of_day
     ).pluck(:available_for_id)
-    teachers = Teacher.where(id: teacher_ids)
-    render partial: "available_teachers", locals: { teachers: teachers }
+    @teachers = Teacher.where(id: teacher_ids)
+    render partial: "teacher_select", locals: { location: @location, date: @date, teachers: @teachers }
   end
 
   def available_timeslots
-    date = Date.parse(params[:date])
-    teacher = Teacher.find(params[:teacher_id])
-    location = Location.find(params[:location_id])
+    @location = Location.find(params[:location_id])
+    @teacher = Teacher.find(params[:teacher_id])
+    @date = Date.parse(params[:date])
     availabilities = Availability.where(
       available_for_type: "Teacher",
-      available_for_id: teacher.id,
+      available_for_id: @teacher.id,
       available: true,
-      start_time: date.beginning_of_day..date.end_of_day
+      start_time: @date.beginning_of_day..@date.end_of_day
     )
     timeslots = []
     availabilities.each do |a|
@@ -79,14 +80,12 @@ class LessonsController < ApplicationController
       end
     end
     booked = Lesson.where(
-      teacher: teacher,
-      location: location,
-      start_time: date.beginning_of_day..date.end_of_day
-    ).pluck(:start_time).map { |t| t.to_s }
-
-    timeslots = timeslots.map { |t| t.to_s }
-    timeslots -= booked
-    render partial: "available_timeslots", locals: { timeslots: timeslots }
+      teacher: @teacher,
+      location: @location,
+      start_time: @date.beginning_of_day..@date.end_of_day
+    ).pluck(:start_time)
+    @timeslots = timeslots - booked
+    render partial: "timeslot_select", locals: { location: @location, teacher: @teacher, date: @date, timeslots: @timeslots }
   end
 
   def create
@@ -97,13 +96,10 @@ class LessonsController < ApplicationController
       start_time: params[:start_time],
       duration: 45
     )
-
     if lesson.save
-      puts lesson.inspect
-      render turbo_stream: turbo_stream.replace("timeslot-step", partial: "lessons/booking_success")
+      render partial: "booking_success" # create _booking_success.html.erb with a success message
     else
-      puts lesson.errors.full_messages.inspect  # This will output errors to the terminal
-      head :unprocessable_entity                # Or use head to return a status without rendering a partial
+      render partial: "timeslot_select", locals: { location: Location.find(params[:location_id]), teacher: Teacher.find(params[:teacher_id]), date: params[:date], timeslots: [] }, status: :unprocessable_entity
     end
   end
 

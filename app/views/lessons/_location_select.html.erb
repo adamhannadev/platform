@@ -1,0 +1,13 @@
+<!-- filepath: /home/adam/projects/platform/app/views/lessons/_location_select.html.erb -->
+<turbo-frame id="booking-flow">
+<h2>Choose Location</h2>
+<%= form_with url: available_days_lessons_path, method: :get, data: { turbo_frame: "booking-flow" } do %>
+  <select name="location_id" required>
+    <option value="">Select...</option>
+    <% locations.each do |loc| %>
+      <option value="<%= loc.id %>"><%= loc.name %></option>
+    <% end %>
+  </select>
+  <%= submit_tag "Next", class: "btn btn-primary" %>
+<% end %>
+</turbo-frame>
