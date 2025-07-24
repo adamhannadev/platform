@@ -46,7 +46,19 @@ class LessonsController < ApplicationController
     location = Location.find(params[:location_id])
     availabilities = location.availabilities.where(available: true)
     days = availabilities.map { |a| a.start_time.to_date }.uniq
-    render partial: "available_days", locals: { days: days }
+    respond_to do |format|
+      format.turbo_stream do
+        if days.count > 0
+          render partial: "available_days", formats: :turbo_stream, locals: { days: days }
+        else
+          render turbo_stream: turbo_stream.append(
+            "toast-container",
+            partial: "shared/toast",
+            locals: { message: "Sorry, there is no availability for this location." }
+          )
+        end
+      end
+    end
   end
 
   def available_teachers
@@ -99,7 +111,6 @@ class LessonsController < ApplicationController
     )
 
     if lesson.save
-      puts lesson.inspect
       render turbo_stream: turbo_stream.replace("timeslot-step", partial: "lessons/booking_success")
     else
       puts lesson.errors.full_messages.inspect  # This will output errors to the terminal

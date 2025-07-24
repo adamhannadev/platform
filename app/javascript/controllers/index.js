@@ -12,3 +12,6 @@ eagerLoadControllersFrom("controllers", application)
 
 import BookingController from "./booking_controller"
 application.register("booking", BookingController)
+
+import ToastController from "./toast_controller"
+application.register("toast", ToastController)

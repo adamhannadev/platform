@@ -62,4 +62,12 @@ export default class extends Controller {
   clearSteps(targets) {
     targets.forEach(t => this[`${t}Target`].innerHTML = "");
   }
+
+  resetToCalendar() {
+    // Clear teacher and timeslot steps
+    this.teacherTarget.innerHTML = "";
+    this.timeslotTarget.innerHTML = "";
+    // Optionally, show the calendar step (if you hide/show steps)
+    // this.showOnly("calendar"); // If you use a showOnly helper
+  }
 }

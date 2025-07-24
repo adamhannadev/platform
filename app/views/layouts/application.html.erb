@@ -51,7 +51,6 @@
   <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e6d6f7;">
     <div class="container-fluid">
       <a class="navbar-brand accent" href="#">Platform</a>
-      <%= current_user.student.full_name %>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -72,5 +71,8 @@
   <div class="main_container container d-flex justify-content-center <%= 'align-items-center' unless user_signed_in? %>" style="height: 100vh;">
     <div class="content"><%= yield %></div>
   </div>
+
+  <!-- Toast container -->
+<div id="toast-container" style="position: fixed; top: 1rem; right: 1rem; z-index: 1055;"></div>
 </body>
 </html>
