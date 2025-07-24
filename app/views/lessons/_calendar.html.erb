@@ -1,13 +1,15 @@
 <turbo-frame id="booking-flow">
-  <h2>Choose a Day</h2>
-  <%= form_with url: available_teachers_lessons_path, method: :get, data: { turbo_frame: "booking-flow" } do %>
-    <input type="hidden" name="location_id" value="<%= location.id %>">
-    <select name="date" required>
-      <option value="">Select a day...</option>
+  <div class="card shadow-sm p-4">
+    <h2 class="mb-4 text-center">Choose a Day</h2>
+    <div class="d-flex flex-wrap gap-2 justify-content-center mb-3">
       <% days.each do |day| %>
-        <option value="<%= day %>"><%= day.strftime("%A, %b %d") %></option>
+        <%= button_to day.strftime("%A, %b %d"),
+          available_teachers_lessons_path,
+          method: :get,
+          params: { location_id: location.id, date: day },
+          form: { data: { turbo_frame: "booking-flow" }, class: "d-inline" },
+          class: "btn btn-outline-primary btn-lg" %>
       <% end %>
-    </select>
-    <%= submit_tag "Next", class: "btn btn-primary" %>
-  <% end %>
+    </div>
+  </div>
 </turbo-frame>

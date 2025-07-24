@@ -1,15 +1,16 @@
 <!-- filepath: /home/adam/projects/platform/app/views/lessons/_timeslot_select.html.erb -->
 <turbo-frame id="booking-flow">
-<h2>Choose a Timeslot</h2>
-<%= form_with url: lessons_path, method: :post, data: { turbo_frame: "booking-flow" } do %>
-  <input type="hidden" name="location_id" value="<%= location.id %>">
-  <input type="hidden" name="teacher_id" value="<%= teacher.id %>">
-  <select name="start_time" required>
-    <option value="">Select a timeslot...</option>
-    <% timeslots.each do |slot| %>
-      <option value="<%= slot %>"><%= slot.strftime("%I:%M %p") %></option>
-    <% end %>
-  </select>
-  <%= submit_tag "Book Lesson", class: "btn btn-success" %>
-<% end %>
+  <div class="card shadow-sm p-4">
+    <h2 class="mb-4 text-center">Choose a Timeslot</h2>
+    <div class="d-flex flex-wrap gap-2 justify-content-center mb-3">
+      <% timeslots.each do |slot| %>
+        <%= button_to slot.strftime("%I:%M %p"),
+          lessons_path,
+          method: :post,
+          params: { location_id: location.id, teacher_id: teacher.id, start_time: slot },
+          form: { data: { turbo_frame: "booking-flow" }, class: "d-inline" },
+          class: "btn btn-success btn-lg" %>
+      <% end %>
+    </div>
+  </div>
 </turbo-frame>

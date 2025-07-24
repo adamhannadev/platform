@@ -64,3 +64,4 @@ group :test do
 end
 
 gem 'simple_calendar'
+gem "flatpickr"
