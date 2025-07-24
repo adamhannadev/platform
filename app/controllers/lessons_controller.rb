@@ -54,7 +54,7 @@ class LessonsController < ApplicationController
         locals: { message: "No available days for this location." }
       )
     else
-      # render partial: "calendar", locals: { location: @location, days: @days }
+     render partial: "calendar", locals: { location: @location, days: @days }
     end
   end
 
