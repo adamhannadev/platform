@@ -1,13 +1,13 @@
 <!-- filepath: /home/adam/projects/platform/app/views/lessons/new.html.erb -->
-<% content_for :title, "New lesson" %>
+<% content_for :title, "New Lesson" %>
 
-<h1>New lesson</h1>
-
+<div style="margin-top:80px;">
 <%= turbo_frame_tag "booking-flow" do %>
   <%= render "location_select", locations: @locations %>
 <% end %>
+</div>
 
-<br>
-<div>
-  <%= link_to "Back to lessons", lessons_path %>
+
+<div class="d-flex justify-content-center mt-3">
+  <%= link_to "Back to Lessons", lessons_path, class: "btn btn-secondary" %>
 </div>

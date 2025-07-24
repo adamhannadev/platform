@@ -71,8 +71,9 @@
 
   <div class="main_container container d-flex justify-content-center <%= 'align-items-center' unless user_signed_in? %>" style="height: 100vh;">
     <div class="content">
-        <div id="messages"></div>
-      <%= yield %></div>
+      <div id="messages" style="position: fixed; top: 1rem; left: 0; width: 100%; z-index: 9999;" class="d-flex justify-content-center"></div>
+      <%= yield %>
+    </div>
   </div>
 
 </body>

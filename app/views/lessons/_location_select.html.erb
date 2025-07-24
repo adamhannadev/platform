@@ -1,16 +1,20 @@
 <!-- filepath: /home/adam/projects/platform/app/views/lessons/_location_select.html.erb -->
 <turbo-frame id="booking-flow">
-  <h2 class="mb-4">Choose Location</h2>
-  <%= form_with url: available_days_lessons_path, method: :get, data: { turbo_frame: "booking-flow" }, html: { class: "mb-3" } do %>
-    <div class="mb-3">
-      <label for="location_id" class="form-label">Location</label>
-      <select name="location_id" id="location_id" class="form-select" required>
-        <option value="">Select...</option>
-        <% locations.each do |loc| %>
-          <option value="<%= loc.id %>"><%= loc.name %></option>
-        <% end %>
-      </select>
-    </div>
-    <%= submit_tag "Next", class: "btn btn-primary" %>
-  <% end %>
+  <div class="card shadow-sm p-4">
+    <h2 class="mb-4 text-center">Choose Location</h2>
+    <%= form_with url: available_days_lessons_path, method: :get, data: { turbo_frame: "booking-flow" }, html: { class: "mb-3" } do %>
+      <div class="mb-3">
+        <label for="location_id" class="form-label fw-bold">Location</label>
+        <select name="location_id" id="location_id" class="form-select form-select-lg" required>
+          <option value="">Select...</option>
+          <% locations.each do |loc| %>
+            <option value="<%= loc.id %>"><%= loc.name %></option>
+          <% end %>
+        </select>
+      </div>
+      <div class="d-grid">
+        <%= submit_tag "Next", class: "btn btn-primary btn-lg" %>
+      </div>
+    <% end %>
+  </div>
 </turbo-frame>
