@@ -46,7 +46,24 @@ class LessonsController < ApplicationController
     @location = Location.find(params[:location_id])
     availabilities = @location.availabilities.where(available: true)
     @days = availabilities.map { |a| a.start_time.to_date }.uniq
-    render partial: "calendar", locals: { location: @location, days: @days }
+
+    respond_to do |format|
+      format.turbo_stream do
+        if @days.empty?
+          render turbo_stream: turbo_stream.append(
+            "messages",
+            partial: "shared/message",
+            locals: { message: "No available days for this location." }
+          )
+        else
+          render partial: "calendar", locals: { location: @location, days: @days }
+        end
+      end
+      format.html do
+        # fallback if needed
+        render partial: "calendar", locals: { location: @location, days: @days }
+      end
+    end
   end
 
   def available_teachers
