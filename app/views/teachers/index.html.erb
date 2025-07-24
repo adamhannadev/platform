@@ -4,32 +4,59 @@
 
 <h1>Teachers</h1>
 
-<table class="tbl">
-  <thead>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Phone</th>
-    <th>Lessons</th>
-    <th></th>
-    <th></th>
-  </thead>
-  <tbody>
-    <% @teachers.each do |t| %>
+<!-- Desktop Table (hidden on mobile) -->
+<div class="table-responsive d-none d-sm-block">
+  <table class="table table-bordered table-striped align-middle">
+    <thead class="table-light">
       <tr>
-        <td><%= link_to t.full_name, teacher_path(t) %></td>
-        <td><%= t.email %></td>
-        <td><%= t.phone %></td>
-        <td><%= t.lessons.count %></td>
-        <td><%= button_to "Edit", edit_teacher_path(t), method: :get, class: "btn" %></td>
-        <td>
-          <%= button_to "Delete", teacher_path(t), method: :delete, data: { confirm: "Are you sure?" }, class: "btn" %>
-        </td>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Lessons</th>
+        <th></th>
+        <th></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @teachers.each do |t| %>
+        <tr>
+          <td><%= link_to t.full_name, teacher_path(t) %></td>
+          <td><%= t.email %></td>
+          <td><%= t.phone %></td>
+          <td><%= t.lessons.count %></td>
+          <td><%= button_to "Edit", edit_teacher_path(t), method: :get, class: "btn btn-primary btn-sm" %></td>
+          <td>
+            <%= button_to "Delete", teacher_path(t), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
-<%= link_to "New teacher", new_teacher_path %>
+<!-- Mobile Card List (hidden on desktop) -->
+<div class="d-block d-sm-none">
+  <% @teachers.each do |t| %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title"><%= link_to t.full_name, teacher_path(t) %></h5>
+        <p class="card-text mb-2">
+          <strong>Email:</strong> <%= t.email %><br>
+          <strong>Phone:</strong> <%= t.phone %><br>
+          <strong>Lessons:</strong> <%= t.lessons.count %>
+        </p>
+        <div class="d-flex gap-2">
+          <%= button_to "Edit", edit_teacher_path(t), method: :get, class: "btn btn-primary btn-sm" %>
+          <%= button_to "Delete", teacher_path(t), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="mt-3">
+  <%= link_to "New teacher", new_teacher_path, class: "btn btn-success" %>
+</div>
 
 <style>
 

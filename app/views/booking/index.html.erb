@@ -1,22 +1,43 @@
-<!-- filepath: /home/adam/projects/platform/app/views/booking/index.html.erb -->
 <h2 class="mb-4">My Upcoming Lessons</h2>
-<table class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Time</th>
-      <th>Location</th>
-      <th>Instructor</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% current_user.student.lessons.where("start_time >= ?", Time.zone.now).order(:start_time).each do |lesson| %>
+
+<!-- Desktop Table (hidden on mobile) -->
+<div class="table-responsive d-none d-sm-block">
+  <table class="table table-bordered table-striped align-middle">
+    <thead class="table-light">
       <tr>
-        <td><%= lesson.start_time.strftime("%A, %b %d, %Y") %></td>
-        <td><%= lesson.start_time.strftime("%I:%M %p") %> - <%= (lesson.start_time+lesson.duration.minutes).strftime("%I:%M %p") %></td>
-        <td><%= lesson.location.name %></td>
-        <td><%= lesson.teacher.full_name %></td>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Location</th>
+        <th>Instructor</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% current_user.student.lessons.where("start_time >= ?", Time.zone.now).order(:start_time).each do |lesson| %>
+        <tr>
+          <td><%= lesson.start_time.strftime("%A, %b %d, %Y") %></td>
+          <td><%= lesson.start_time.strftime("%I:%M %p") %> - <%= (lesson.start_time+lesson.duration.minutes).strftime("%I:%M %p") %></td>
+          <td><%= lesson.location.name %></td>
+          <td><%= lesson.teacher.full_name %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<!-- Mobile Card List (hidden on desktop) -->
+<div class="d-block d-sm-none">
+  <% current_user.student.lessons.where("start_time >= ?", Time.zone.now).order(:start_time).each do |lesson| %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title"><%= lesson.start_time.strftime("%A, %b %d, %Y") %></h5>
+        <p class="card-text mb-2">
+          <strong>Time:</strong> <%= lesson.start_time.strftime("%I:%M %p") %> - <%= (lesson.start_time+lesson.duration.minutes).strftime("%I:%M %p") %><br>
+          <strong>Location:</strong> <%= lesson.location.name %><br>
+          <strong>Instructor:</strong> <%= lesson.teacher.full_name %>
+        </p>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%= link_to "New Booking", new_booking_path, class: "btn btn-primary" %>
