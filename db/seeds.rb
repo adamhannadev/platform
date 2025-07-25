@@ -8,6 +8,15 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+# Create an admin user if it doesn't exist
+admin_user = User.find_or_create_by!(email: "admin@example.com") do |user|
+  user.password = "password123"
+  user.password_confirmation = "password123"
+  user.role = "admin"
+end
+
+puts "Admin user created: #{admin_user.email} (#{admin_user.role})"
+
 require 'roo'
 
 # Create Figures

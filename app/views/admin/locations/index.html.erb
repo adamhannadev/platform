@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Locations</h1>
+        <%= link_to "New Location", new_admin_location_path, class: "btn btn-primary" %>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Address</th>
+                  <th>Rate</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @locations.each do |location| %>
+                  <tr>
+                    <td><%= location.name %></td>
+                    <td>
+                      <% if location.address.present? %>
+                        <%= location.address %>
+                      <% else %>
+                        <span class="text-muted">No address</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <% if location.rate.present? %>
+                        $<%= number_with_precision(location.rate, precision: 2) %>
+                      <% else %>
+                        <span class="text-muted">No rate</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <%= link_to "View", admin_location_path(location), class: "btn btn-sm btn-outline-primary" %>
+                      <%= link_to "Schedules", admin_location_schedules_path(location), class: "btn btn-sm btn-outline-info" %>
+                      <%= link_to "Availability", admin_location_availabilities_path(location), class: "btn btn-sm btn-outline-warning" %>
+                      <%= link_to "Edit", edit_admin_location_path(location), class: "btn btn-sm btn-outline-secondary" %>
+                      <%= link_to "Delete", admin_location_path(location), method: :delete, 
+                                  confirm: "Are you sure?", class: "btn btn-sm btn-outline-danger" %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

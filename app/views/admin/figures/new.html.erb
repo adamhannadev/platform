@@ -1,0 +1,75 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>New Figure</h1>
+        <%= link_to "Back to Figures", admin_figures_path, class: "btn btn-secondary" %>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <%= form_with model: [:admin, @figure], local: true, class: "row g-3" do |form| %>
+            <% if @figure.errors.any? %>
+              <div class="col-12">
+                <div class="alert alert-danger">
+                  <h4><%= pluralize(@figure.errors.count, "error") %> prohibited this figure from being saved:</h4>
+                  <ul class="mb-0">
+                    <% @figure.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            <% end %>
+
+            <div class="col-md-6">
+              <%= form.label :dance, class: "form-label" %>
+              <%= form.select :dance, [['Waltz', 'Waltz'], ['Tango', 'Tango'], ['Foxtrot', 'Foxtrot'], ['Quickstep', 'Quickstep'], ['Viennese Waltz', 'Viennese Waltz']], 
+                              { include_blank: "Select dance" }, { class: "form-select" } %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :number, class: "form-label" %>
+              <%= form.text_field :number, class: "form-control" %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :name, class: "form-label" %>
+              <%= form.text_field :name, class: "form-control" %>
+            </div>
+
+            <div class="col-md-3">
+              <%= form.label :bars, class: "form-label" %>
+              <%= form.number_field :bars, class: "form-control" %>
+            </div>
+
+            <div class="col-md-3">
+              <%= form.label :level, class: "form-label" %>
+              <%= form.select :level, [['Beginner', 'Beginner'], ['Intermediate', 'Intermediate'], ['Advanced', 'Advanced']], 
+                              { include_blank: "Select level" }, { class: "form-select" } %>
+            </div>
+
+            <div class="col-12">
+              <%= form.label :components, class: "form-label" %>
+              <%= form.text_area :components, class: "form-control", rows: 4, 
+                                 placeholder: "Describe the components and steps of this figure..." %>
+            </div>
+
+            <div class="col-12">
+              <div class="form-check">
+                <%= form.check_box :core, class: "form-check-input" %>
+                <%= form.label :core, "Core Figure", class: "form-check-label" %>
+                <div class="form-text">Mark this if it's a fundamental figure that students should learn early.</div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <%= form.submit "Create Figure", class: "btn btn-primary" %>
+              <%= link_to "Cancel", admin_figures_path, class: "btn btn-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

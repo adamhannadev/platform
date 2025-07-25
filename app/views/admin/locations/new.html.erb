@@ -1,0 +1,49 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>New Location</h1>
+        <%= link_to "Back to Locations", admin_locations_path, class: "btn btn-secondary" %>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <%= form_with model: [:admin, @location], local: true, class: "row g-3" do |form| %>
+            <% if @location.errors.any? %>
+              <div class="col-12">
+                <div class="alert alert-danger">
+                  <h4><%= pluralize(@location.errors.count, "error") %> prohibited this location from being saved:</h4>
+                  <ul class="mb-0">
+                    <% @location.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            <% end %>
+
+            <div class="col-md-6">
+              <%= form.label :name, class: "form-label" %>
+              <%= form.text_field :name, class: "form-control" %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :rate, "Hourly Rate ($)", class: "form-label" %>
+              <%= form.number_field :rate, step: 0.01, class: "form-control" %>
+            </div>
+
+            <div class="col-12">
+              <%= form.label :address, class: "form-label" %>
+              <%= form.text_area :address, class: "form-control", rows: 2 %>
+            </div>
+
+            <div class="col-12">
+              <%= form.submit "Create Location", class: "btn btn-primary" %>
+              <%= link_to "Cancel", admin_locations_path, class: "btn btn-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Teacher Details</h1>
+        <div>
+          <%= link_to "Edit", edit_admin_teacher_path(@teacher), class: "btn btn-primary" %>
+          <%= link_to "Back to Teachers", admin_teachers_path, class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h5><%= "#{@teacher.first_name} #{@teacher.last_name}".strip %></h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <strong>First Name:</strong>
+                  <p><%= @teacher.first_name || "Not provided" %></p>
+                </div>
+                <div class="col-md-6">
+                  <strong>Last Name:</strong>
+                  <p><%= @teacher.last_name || "Not provided" %></p>
+                </div>
+                <div class="col-md-6">
+                  <strong>Phone:</strong>
+                  <p><%= @teacher.phone || "Not provided" %></p>
+                </div>
+                <div class="col-md-6">
+                  <strong>Email:</strong>
+                  <p><%= @teacher.email || "Not provided" %></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              <h5>User Account</h5>
+            </div>
+            <div class="card-body">
+              <% if @teacher.user.present? %>
+                <div class="alert alert-success">
+                  <strong>Account Linked</strong><br>
+                  Email: <%= @teacher.user.email %><br>
+                  Role: <%= @teacher.user.role.humanize %>
+                </div>
+              <% else %>
+                <div class="alert alert-warning">
+                  <strong>No User Account</strong><br>
+                  This teacher doesn't have a linked user account.
+                </div>
+              <% end %>
+            </div>
+          </div>
+          
+          <div class="card mt-3">
+            <div class="card-header">
+              <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+              <%= link_to "View Lessons", admin_lessons_path(teacher_id: @teacher.id), class: "btn btn-sm btn-outline-primary d-block mb-2" %>
+              <%= link_to "Manage Availability", admin_availabilities_path(available_type: 'Teacher', available_id: @teacher.id), class: "btn btn-sm btn-outline-info d-block mb-2" %>
+              <%= link_to "Edit Teacher", edit_admin_teacher_path(@teacher), class: "btn btn-sm btn-outline-secondary d-block" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

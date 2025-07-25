@@ -1,0 +1,57 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><%= @parent.class.name %> Availability - <%= @parent.name %></h1>
+        <div>
+          <%= link_to "New Availability", new_polymorphic_path([:admin, @parent, :availabilities]), class: "btn btn-primary" %>
+          <%= link_to "Back to #{@parent.class.name.pluralize}", polymorphic_path([:admin, @parent.class.name.downcase.pluralize.to_sym]), class: "btn btn-secondary" %>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <% if @availabilities.any? %>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Duration</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @availabilities.each do |availability| %>
+                    <tr>
+                      <td><%= availability.start_time.strftime("%A, %B %d, %Y") %></td>
+                      <td><%= availability.start_time.strftime("%I:%M %p") %></td>
+                      <td><%= availability.end_time.strftime("%I:%M %p") %></td>
+                      <td>
+                        <% duration = ((availability.end_time - availability.start_time) / 1.hour).round(1) %>
+                        <%= "#{duration} hour#{'s' if duration != 1}" %>
+                      </td>
+                      <td>
+                        <%= link_to "Edit", edit_admin_availability_path(availability), class: "btn btn-sm btn-outline-secondary" %>
+                        <%= link_to "Delete", admin_availability_path(availability), method: :delete, 
+                                    confirm: "Are you sure?", class: "btn btn-sm btn-outline-danger" %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <div class="text-center py-5">
+              <h4 class="text-muted">No availability slots found</h4>
+              <p>Create availability slots to allow bookings for this <%= @parent.class.name.downcase %>.</p>
+              <%= link_to "Add First Availability", new_polymorphic_path([:admin, @parent, :availabilities]), class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

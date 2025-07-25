@@ -1,0 +1,57 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Students</h1>
+        <%= link_to "New Student", new_admin_student_path, class: "btn btn-primary" %>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>User Account</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @students.each do |student| %>
+                  <tr>
+                    <td><%= student.full_name %></td>
+                    <td><%= student.email.present? ? student.email : (student.user&.email || "No email") %></td>
+                    <td>
+                      <% if student.phone.present? %>
+                        <%= student.phone %>
+                      <% else %>
+                        <span class="text-muted">No phone</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <% if student.user.present? %>
+                        <span class="badge bg-success">Linked</span>
+                      <% else %>
+                        <span class="badge bg-warning">No account</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <%= link_to "View", admin_student_path(student), class: "btn btn-sm btn-outline-primary" %>
+                      <%= link_to "Charts", charts_admin_student_path(student), class: "btn btn-sm btn-outline-success" %>
+                      <%= link_to "Edit", edit_admin_student_path(student), class: "btn btn-sm btn-outline-secondary" %>
+                      <%= link_to "Delete", admin_student_path(student), method: :delete, 
+                                  confirm: "Are you sure?", class: "btn btn-sm btn-outline-danger" %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

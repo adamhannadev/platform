@@ -1,0 +1,94 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Edit Student</h1>
+        <%= link_to "Back to Student", admin_student_path(@student), class: "btn btn-secondary" %>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <%= form_with model: [:admin, @student], local: true, class: "row g-3" do |form| %>
+            <% if @student.errors.any? %>
+              <div class="col-12">
+                <div class="alert alert-danger">
+                  <h4><%= pluralize(@student.errors.count, "error") %> prohibited this student from being saved:</h4>
+                  <ul class="mb-0">
+                    <% @student.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            <% end %>
+
+            <div class="col-12">
+              <h5>Student Information</h5>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :first_name, class: "form-label" %>
+              <%= form.text_field :first_name, class: "form-control" %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :last_name, class: "form-label" %>
+              <%= form.text_field :last_name, class: "form-control" %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :phone, class: "form-label" %>
+              <%= form.telephone_field :phone, class: "form-control" %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :email, class: "form-label" %>
+              <%= form.email_field :email, class: "form-control" %>
+            </div>
+
+            <% if @student.user.present? %>
+              <div class="col-12">
+                <h5>User Account</h5>
+                <p class="text-muted">Update user information for this student.</p>
+              </div>
+
+              <%= form.fields_for :user do |user_form| %>
+                <div class="col-md-6">
+                  <%= user_form.label :email, class: "form-label" %>
+                  <%= user_form.email_field :email, class: "form-control" %>
+                </div>
+
+                <div class="col-md-6">
+                  <%= user_form.label :role, class: "form-label" %>
+                  <%= user_form.select :role, [['Student', 'student'], ['Teacher', 'teacher'], ['Admin', 'admin']], 
+                                      {}, { class: "form-select" } %>
+                </div>
+
+                <div class="col-md-6">
+                  <%= user_form.label :password, "New Password (leave blank to keep current)", class: "form-label" %>
+                  <%= user_form.password_field :password, class: "form-control" %>
+                </div>
+
+                <div class="col-md-6">
+                  <%= user_form.label :password_confirmation, class: "form-label" %>
+                  <%= user_form.password_field :password_confirmation, class: "form-control" %>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="col-12">
+                <div class="alert alert-info">
+                  <strong>No User Account:</strong> This student doesn't have a user account. You can create one by editing this student and filling in the user fields.
+                </div>
+              </div>
+            <% end %>
+
+            <div class="col-12">
+              <%= form.submit "Update Student", class: "btn btn-primary" %>
+              <%= link_to "Cancel", admin_student_path(@student), class: "btn btn-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -28,19 +28,39 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :students
-  get "students/:id/:dance" => "students#charts", as: :charts
-  
   resources :lessons
 
   # Update the charts when clicked on students chart.
   patch 'charts/:id/toggle', to: 'charts#toggle'
 
-  resources :availabilities
-  # post 'availabilities/bulk_create_teacher', to: 'availabilities#bulk_create_teacher', as: :bulk_create_teacher_availabilities
-  get "availabilities/month/:month" => "availabilities#index", as: :availabilities_month
-
-  resources :figures
+  # Admin routes - only accessible to admin users
+  namespace :admin do
+    root 'dashboard#index'
+    resources :users
+    
+    resources :students do
+      member do
+        get :charts
+      end
+    end
+    
+    resources :teachers do
+      resources :availabilities
+      member do
+        get :schedules
+      end
+    end
+    
+    resources :locations do
+      resources :availabilities
+      member do
+        get :schedules
+      end
+    end
+    
+    resources :availabilities, only: [:show, :edit, :update, :destroy]
+    resources :figures
+  end
 
   resources :booking, only: [:index, :new, :create] do
     collection do

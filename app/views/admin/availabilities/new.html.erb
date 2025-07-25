@@ -1,0 +1,61 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>New Availability for <%= @parent.name %></h1>
+        <%= link_to "Back to Availability", polymorphic_path([:admin, @parent, :availabilities]), class: "btn btn-secondary" %>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <%= form_with model: [:admin, @parent, @availability], local: true, class: "row g-3" do |form| %>
+            <% if @availability.errors.any? %>
+              <div class="col-12">
+                <div class="alert alert-danger">
+                  <h4><%= pluralize(@availability.errors.count, "error") %> prohibited this availability from being saved:</h4>
+                  <ul class="mb-0">
+                    <% @availability.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            <% end %>
+
+            <div class="col-12">
+              <div class="alert alert-info">
+                <strong><%= @parent.class.name %>:</strong> <%= @parent.name %>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :start_time, "Start Date & Time", class: "form-label" %>
+              <%= form.datetime_local_field :start_time, class: "form-control" %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :end_time, "End Date & Time", class: "form-label" %>
+              <%= form.datetime_local_field :end_time, class: "form-control" %>
+            </div>
+
+            <div class="col-12">
+              <div class="form-text">
+                <strong>Tips:</strong>
+                <ul class="mb-0">
+                  <li>Make sure the end time is after the start time</li>
+                  <li>Consider typical lesson durations (1-2 hours)</li>
+                  <li>Check for conflicts with existing availability slots</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <%= form.submit "Create Availability", class: "btn btn-primary" %>
+              <%= link_to "Cancel", polymorphic_path([:admin, @parent, :availabilities]), class: "btn btn-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,107 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Admin Dashboard</h1>
+      
+      <div class="row">
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="card text-white bg-primary">
+            <div class="card-body">
+              <h5 class="card-title">Users</h5>
+              <h2><%= @users_count %></h2>
+              <%= link_to "Manage Users", admin_users_path, class: "btn btn-light btn-sm" %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="card text-white bg-success">
+            <div class="card-body">
+              <h5 class="card-title">Students</h5>
+              <h2><%= @students_count %></h2>
+              <%= link_to "Manage Students", admin_students_path, class: "btn btn-light btn-sm" %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="card text-white bg-info">
+            <div class="card-body">
+              <h5 class="card-title">Teachers</h5>
+              <h2><%= @teachers_count %></h2>
+              <%= link_to "Manage Teachers", admin_teachers_path, class: "btn btn-light btn-sm" %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="card text-white bg-warning">
+            <div class="card-body">
+              <h5 class="card-title">Locations</h5>
+              <h2><%= @locations_count %></h2>
+              <%= link_to "Manage Locations", admin_locations_path, class: "btn btn-light btn-sm" %>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-4 col-sm-6 mb-3">
+          <div class="card text-white bg-secondary">
+            <div class="card-body">
+              <h5 class="card-title">Figures</h5>
+              <h2><%= @figures_count %></h2>
+              <%= link_to "Manage Figures", admin_figures_path, class: "btn btn-light btn-sm" %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4 col-sm-6 mb-3">
+          <div class="card text-white bg-dark">
+            <div class="card-body">
+              <h5 class="card-title">Availabilities</h5>
+              <h2><%= @availabilities_count %></h2>
+              <p class="card-text">Total teacher and location availability slots</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4 col-sm-6 mb-3">
+          <div class="card text-white bg-danger">
+            <div class="card-body">
+              <h5 class="card-title">Lessons</h5>
+              <h2><%= @lessons_count %></h2>
+              <p class="card-text">Total booked lessons</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-3 mb-2">
+                  <%= link_to "Add New User", new_admin_user_path, class: "btn btn-primary w-100" %>
+                </div>
+                <div class="col-md-3 mb-2">
+                  <%= link_to "Add New Student", new_admin_student_path, class: "btn btn-success w-100" %>
+                </div>
+                <div class="col-md-3 mb-2">
+                  <%= link_to "Add New Teacher", new_admin_teacher_path, class: "btn btn-info w-100" %>
+                </div>
+                <div class="col-md-3 mb-2">
+                  <%= link_to "Add New Location", new_admin_location_path, class: "btn btn-warning w-100" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

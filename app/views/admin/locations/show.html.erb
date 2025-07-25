@@ -1,0 +1,59 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Location Details</h1>
+        <div>
+          <%= link_to "Edit", edit_admin_location_path(@location), class: "btn btn-primary" %>
+          <%= link_to "Schedules", admin_location_schedules_path(@location), class: "btn btn-info" %>
+          <%= link_to "Back to Locations", admin_locations_path, class: "btn btn-secondary" %>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h5>Name</h5>
+              <p class="text-muted"><%= @location.name %></p>
+            </div>
+            <div class="col-md-6">
+              <h5>Hourly Rate</h5>
+              <p>
+                <% if @location.rate.present? %>
+                  <span class="badge bg-success fs-6">$<%= number_with_precision(@location.rate, precision: 2) %></span>
+                <% else %>
+                  <span class="text-muted">Not set</span>
+                <% end %>
+              </p>
+            </div>
+          </div>
+          
+          <% if @location.address.present? %>
+            <div class="row mt-3">
+              <div class="col-12">
+                <h5>Address</h5>
+                <div class="card bg-light">
+                  <div class="card-body">
+                    <p class="mb-0"><%= simple_format(@location.address) %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+          
+          <div class="row mt-3">
+            <div class="col-12">
+              <h5>Statistics</h5>
+              <p>
+                Available Slots: <%= @location.availabilities.count %><br>
+                Total Lessons: <%= @location.lessons.count %><br>
+                Created: <%= @location.created_at.strftime("%B %d, %Y") %>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

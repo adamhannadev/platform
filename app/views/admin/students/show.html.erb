@@ -1,0 +1,67 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Student Details</h1>
+        <div>
+          <%= link_to "Edit", edit_admin_student_path(@student), class: "btn btn-primary" %>
+          <%= link_to "Charts", charts_admin_student_path(@student), class: "btn btn-success" %>
+          <%= link_to "Back to Students", admin_students_path, class: "btn btn-secondary" %>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h5>Name</h5>
+              <p class="text-muted"><%= "#{@student.first_name} #{@student.last_name}".strip %></p>
+            </div>
+            <div class="col-md-6">
+              <h5>Phone</h5>
+              <p class="text-muted">
+                <%= @student.phone.present? ? @student.phone : "No phone number" %>
+              </p>
+            </div>
+          </div>
+          
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <h5>Email</h5>
+              <p class="text-muted">
+                <%= @student.email.present? ? @student.email : "No email" %>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <h5>Charts</h5>
+              <p class="text-muted">
+                <%= @student.charts.count %> figure charts
+              </p>
+            </div>
+          </div>
+          
+          <% if @student.user.present? %>
+            <div class="row mt-3">
+              <div class="col-12">
+                <h5>User Account</h5>
+                <p>
+                  Email: <%= @student.user.email %><br>
+                  Role: <span class="badge bg-success"><%= @student.user.role.titleize %></span><br>
+                  <%= link_to "View User", admin_user_path(@student.user), class: "btn btn-sm btn-outline-primary mt-2" %>
+                </p>
+              </div>
+            </div>
+          <% else %>
+            <div class="row mt-3">
+              <div class="col-12">
+                <div class="alert alert-warning">
+                  <strong>No User Account:</strong> This student doesn't have a user account and cannot log in.
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

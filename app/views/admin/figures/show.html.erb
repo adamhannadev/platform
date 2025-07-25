@@ -1,0 +1,86 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Figure Details</h1>
+        <div>
+          <%= link_to "Edit", edit_admin_figure_path(@figure), class: "btn btn-primary" %>
+          <%= link_to "Back to Figures", admin_figures_path, class: "btn btn-secondary" %>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h5>Dance</h5>
+              <p>
+                <span class="badge bg-<%= 
+                  case @figure.dance&.downcase
+                  when 'waltz' then 'primary'
+                  when 'tango' then 'danger'
+                  when 'foxtrot' then 'success'
+                  else 'secondary'
+                  end
+                %> fs-6">
+                  <%= @figure.dance %>
+                </span>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <h5>Number</h5>
+              <p class="text-muted"><%= @figure.number %></p>
+            </div>
+          </div>
+          
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <h5>Name</h5>
+              <p class="text-muted"><%= @figure.name %></p>
+            </div>
+            <div class="col-md-3">
+              <h5>Bars</h5>
+              <p class="text-muted"><%= @figure.bars %></p>
+            </div>
+            <div class="col-md-3">
+              <h5>Level</h5>
+              <p>
+                <% if @figure.level.present? %>
+                  <span class="badge bg-info fs-6"><%= @figure.level %></span>
+                <% else %>
+                  <span class="text-muted">Not set</span>
+                <% end %>
+              </p>
+            </div>
+          </div>
+          
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <h5>Core Figure</h5>
+              <p>
+                <% if @figure.core? %>
+                  <span class="badge bg-warning fs-6">Yes</span>
+                <% else %>
+                  <span class="badge bg-secondary fs-6">No</span>
+                <% end %>
+              </p>
+            </div>
+          </div>
+          
+          <% if @figure.components.present? %>
+            <div class="row mt-3">
+              <div class="col-12">
+                <h5>Components</h5>
+                <div class="card bg-light">
+                  <div class="card-body">
+                    <p class="mb-0"><%= simple_format(@figure.components) %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

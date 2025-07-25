@@ -1,0 +1,63 @@
+class Admin::AvailabilitiesController < Admin::ApplicationController
+  before_action :set_availability, only: [:show, :edit, :update, :destroy]
+  before_action :set_polymorphic_parent, only: [:index, :new, :create]
+
+  def index
+    @availabilities = @parent.availabilities.order(:start_time)
+  end
+
+  def show
+  end
+
+  def new
+    @availability = @parent.availabilities.build
+  end
+
+  def edit
+    @parent = @availability.available_for
+  end
+
+  def create
+    @availability = @parent.availabilities.build(availability_params)
+    
+    if @availability.save
+      redirect_to polymorphic_path([:admin, @parent, :availabilities]), notice: 'Availability was successfully created.'
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if @availability.update(availability_params)
+      redirect_to admin_availability_path(@availability), notice: 'Availability was successfully updated.'
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    parent = @availability.available_for
+    @availability.destroy
+    redirect_to polymorphic_path([:admin, parent, :availabilities]), notice: 'Availability was successfully deleted.'
+  end
+
+  private
+
+  def set_availability
+    @availability = Availability.find(params[:id])
+  end
+
+  def set_polymorphic_parent
+    if params[:teacher_id]
+      @parent = Teacher.find(params[:teacher_id])
+    elsif params[:location_id]
+      @parent = Location.find(params[:location_id])
+    else
+      redirect_to admin_root_path, alert: 'Invalid availability context.'
+    end
+  end
+
+  def availability_params
+    params.require(:availability).permit(:start_time, :end_time)
+  end
+end

@@ -1,0 +1,50 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Teachers</h1>
+        <%= link_to "New Teacher", new_admin_teacher_path, class: "btn btn-primary" %>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                  <th>User Account</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @teachers.each do |teacher| %>
+                  <tr>
+                    <td><%= "#{teacher.first_name} #{teacher.last_name}".strip %></td>
+                    <td><%= teacher.phone || "Not provided" %></td>
+                    <td><%= teacher.email || "Not provided" %></td>
+                    <td>
+                      <% if teacher.user.present? %>
+                        <span class="badge bg-success">Linked (#{teacher.user.email})</span>
+                      <% else %>
+                        <span class="badge bg-warning">No User Account</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <%= link_to "View", admin_teacher_path(teacher), class: "btn btn-sm btn-outline-primary" %>
+                      <%= link_to "Edit", edit_admin_teacher_path(teacher), class: "btn btn-sm btn-outline-secondary" %>
+                      <%= link_to "Delete", admin_teacher_path(teacher), method: :delete, 
+                                  confirm: "Are you sure?", class: "btn btn-sm btn-outline-danger" %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

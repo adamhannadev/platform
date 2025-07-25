@@ -1,0 +1,176 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Chart Progress for <%= @student.full_name %></h1>
+        <div>
+          <%= link_to "View Student", admin_student_path(@student), class: "btn btn-outline-primary" %>
+          <%= link_to "Back to Students", admin_students_path, class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Dance Figure Progress Chart</h5>
+          <small class="text-muted">Click on T (Timing), M (Movement), or P (Partnering) cells to toggle progress</small>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="table-dark">
+                <tr>
+                  <th style="writing-mode: vertical-lr; text-align: center;">Level</th>
+                  <th>Figure #</th>
+                  <th>Figure Name</th>
+                  <th class="text-center">T</th>
+                  <th class="text-center">M</th>
+                  <th class="text-center">P</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if @charts.any? %>
+                  <% grouped = @charts.includes(:figure).group_by { |c| c.figure.level || 'Unassigned' } %>
+                  <% grouped.sort.each do |level, charts| %>
+                    <% charts.sort_by { |c| c.figure.number.to_i }.each_with_index do |chart, i| %>
+                      <tr class="<%= 'table-info' if chart.figure.core %>">
+                        <% if i == 0 %>
+                          <td rowspan="<%= charts.size %>" 
+                              class="text-center align-middle bg-light fw-bold"
+                              style="writing-mode: vertical-lr;">
+                            <%= level.upcase %>
+                          </td>
+                        <% end %>
+                        <td class="<%= 'text-center fw-bold' if chart.figure.core %>">
+                          <%= chart.figure.number %>
+                        </td>
+                        <td>
+                          <%= chart.figure.name %>
+                          <% if chart.figure.core %>
+                            <span class="badge bg-warning ms-2">Core</span>
+                          <% end %>
+                        </td>
+                        <td class="toggle-cell text-center" 
+                            data-chart-id="<%= chart.id %>" 
+                            data-field="timing"
+                            style="cursor: pointer; background-color: <%= chart.timing? ? '#d4edda' : '#f8f9fa' %>">
+                          <%= chart.timing? ? "✓" : "" %>
+                        </td>
+                        <td class="toggle-cell text-center" 
+                            data-chart-id="<%= chart.id %>" 
+                            data-field="movement"
+                            style="cursor: pointer; background-color: <%= chart.movement? ? '#d4edda' : '#f8f9fa' %>">
+                          <%= chart.movement? ? "✓" : "" %>
+                        </td>
+                        <td class="toggle-cell text-center" 
+                            data-chart-id="<%= chart.id %>" 
+                            data-field="partnering"
+                            style="cursor: pointer; background-color: <%= chart.partnering? ? '#d4edda' : '#f8f9fa' %>">
+                          <%= chart.partnering? ? "✓" : "" %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <tr>
+                    <td colspan="6" class="text-center text-muted">
+                      No charts available for this student. Charts are automatically created when figures are added to the system.
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h6>Legend</h6>
+            </div>
+            <div class="card-body">
+              <ul class="list-unstyled mb-0">
+                <li><strong>T</strong> - Timing mastered</li>
+                <li><strong>M</strong> - Movement mastered</li>
+                <li><strong>P</strong> - Partnering mastered</li>
+                <li><span class="badge bg-warning">Core</span> - Core figure (essential)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h6>Progress Summary</h6>
+            </div>
+            <div class="card-body">
+              <% if @charts.any? %>
+                <% total_skills = @charts.count * 3 %>
+                <% completed_skills = @charts.sum { |c| [c.timing, c.movement, c.partnering].count(true) } %>
+                <% progress_percent = total_skills > 0 ? (completed_skills.to_f / total_skills * 100).round(1) : 0 %>
+                
+                <div class="progress mb-2">
+                  <div class="progress-bar" role="progressbar" 
+                       style="width: <%= progress_percent %>%" 
+                       aria-valuenow="<%= progress_percent %>" 
+                       aria-valuemin="0" aria-valuemax="100">
+                    <%= progress_percent %>%
+                  </div>
+                </div>
+                <small class="text-muted">
+                  <%= completed_skills %> of <%= total_skills %> skills completed
+                </small>
+              <% else %>
+                <p class="text-muted mb-0">No progress data available</p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.toggle-cell').forEach(function(td) {
+  td.addEventListener('click', function() {
+    const chartId = td.dataset.chartId;
+    const field = td.dataset.field;
+    const current = td.textContent.trim() === "✓";
+    
+    // Toggle display immediately
+    td.textContent = current ? "" : "✓";
+    td.style.backgroundColor = current ? "#f8f9fa" : "#d4edda";
+    
+    // Send AJAX request to update the backend
+    fetch(`/charts/${chartId}/toggle`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({ field: field, value: !current })
+    }).then(response => {
+      if (!response.ok) {
+        // Revert on error
+        td.textContent = current ? "✓" : "";
+        td.style.backgroundColor = current ? "#d4edda" : "#f8f9fa";
+        alert('Error updating progress. Please try again.');
+      }
+    }).catch(error => {
+      // Revert on error
+      td.textContent = current ? "✓" : "";
+      td.style.backgroundColor = current ? "#d4edda" : "#f8f9fa";
+      alert('Error updating progress. Please try again.');
+    });
+  });
+});
+</script>
+
+<style>
+.toggle-cell:hover {
+  opacity: 0.8;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+</style>

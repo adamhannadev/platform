@@ -16,6 +16,12 @@ module Platform
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    # Silence ActiveSupport::ProxyObject deprecation warnings temporarily
+    # This is needed for gems like 'roo' that haven't been updated yet
+    if Rails.env.development?
+      config.active_support.deprecation = :silence
+    end
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

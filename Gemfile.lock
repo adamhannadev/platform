@@ -310,7 +310,7 @@ DEPENDENCIES
   jbuilder
   puma (>= 5.0)
   rails (~> 7.2.1)
-  roo
+  roo (~> 2.10.1)
   rubocop-rails-omakase
   selenium-webdriver
   simple_calendar
