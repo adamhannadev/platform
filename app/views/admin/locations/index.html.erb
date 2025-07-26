@@ -38,7 +38,7 @@
                     </td>
                     <td>
                       <%= link_to "View", admin_location_path(location), class: "btn btn-sm btn-outline-primary" %>
-                      <%= link_to "Schedules", admin_location_schedules_path(location), class: "btn btn-sm btn-outline-info" %>
+                      <%= link_to "Schedules", schedules_admin_location_path(location), class: "btn btn-sm btn-outline-info" %>
                       <%= link_to "Availability", admin_location_availabilities_path(location), class: "btn btn-sm btn-outline-warning" %>
                       <%= link_to "Edit", edit_admin_location_path(location), class: "btn btn-sm btn-outline-secondary" %>
                       <%= link_to "Delete", admin_location_path(location), method: :delete, 

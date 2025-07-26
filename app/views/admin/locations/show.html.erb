@@ -5,7 +5,7 @@
         <h1>Location Details</h1>
         <div>
           <%= link_to "Edit", edit_admin_location_path(@location), class: "btn btn-primary" %>
-          <%= link_to "Schedules", admin_location_schedules_path(@location), class: "btn btn-info" %>
+          <%= link_to "Schedules", schedules_admin_location_path(@location), class: "btn btn-info" %>
           <%= link_to "Back to Locations", admin_locations_path, class: "btn btn-secondary" %>
         </div>
       </div>
@@ -47,7 +47,7 @@
               <h5>Statistics</h5>
               <p>
                 Available Slots: <%= @location.availabilities.count %><br>
-                Total Lessons: <%= @location.lessons.count %><br>
+                Total Lessons: <%= @lessons.count %><br>
                 Created: <%= @location.created_at.strftime("%B %d, %Y") %>
               </p>
             </div>

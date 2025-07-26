@@ -6,6 +6,7 @@ class Admin::LocationsController < Admin::ApplicationController
   end
 
   def show
+    @lessons = Lesson.where(location: @location)
   end
 
   def new
