@@ -1,0 +1,74 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>New Lesson</h1>
+        <%= link_to "Back to Lessons", admin_lessons_path, class: "btn btn-outline-secondary" %>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h5>Lesson Details</h5>
+            </div>
+            <div class="card-body">
+              <%= render 'form' %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              <h6>Quick Tips</h6>
+            </div>
+            <div class="card-body">
+              <ul class="list-unstyled small">
+                <li class="mb-2">
+                  <i class="fas fa-lightbulb text-warning"></i>
+                  <strong>Availability:</strong> Ensure both teacher and location are available at the selected time.
+                </li>
+                <li class="mb-2">
+                  <i class="fas fa-clock text-info"></i>
+                  <strong>Duration:</strong> Most lessons are 45-60 minutes long.
+                </li>
+                <li class="mb-2">
+                  <i class="fas fa-clipboard-list text-success"></i>
+                  <strong>Lesson Plan:</strong> Adding a plan helps track progress and goals.
+                </li>
+                <li class="mb-2">
+                  <i class="fas fa-copy text-primary"></i>
+                  <strong>Tip:</strong> You can duplicate lessons from the lesson details page.
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Quick Stats -->
+          <div class="card mt-3">
+            <div class="card-header">
+              <h6>Quick Stats</h6>
+            </div>
+            <div class="card-body">
+              <div class="row text-center">
+                <div class="col-4">
+                  <div class="h6"><%= Student.count %></div>
+                  <div class="small text-muted">Students</div>
+                </div>
+                <div class="col-4">
+                  <div class="h6"><%= Teacher.count %></div>
+                  <div class="small text-muted">Teachers</div>
+                </div>
+                <div class="col-4">
+                  <div class="h6"><%= Location.count %></div>
+                  <div class="small text-muted">Locations</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

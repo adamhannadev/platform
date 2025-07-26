@@ -1,0 +1,369 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Book New Lesson</h1>
+        <div>
+          <%= link_to "Calendar View", admin_booking_index_path, class: "btn btn-outline-secondary" %>
+          <%= link_to "All Lessons", admin_lessons_path, class: "btn btn-outline-info" %>
+        </div>
+      </div>
+      
+      <div class="row">
+        <!-- Booking Form -->
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h5>Lesson Details</h5>
+            </div>
+            <div class="card-body">
+              <%= form_with model: [:admin, @lesson], local: true, id: "booking-form" do |form| %>
+                <% if @lesson.errors.any? %>
+                  <div class="alert alert-danger">
+                    <h6>Please fix the following errors:</h6>
+                    <ul class="mb-0">
+                      <% @lesson.errors.full_messages.each do |message| %>
+                        <li><%= message %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+                <% end %>
+
+                <div class="row g-3">
+                  <!-- Step 1: Select Student -->
+                  <div class="col-md-6">
+                    <%= form.label :student_id, "Student", class: "form-label" %>
+                    <%= form.select :student_id, 
+                                    options_from_collection_for_select(@students, :id, :full_name, @lesson.student_id),
+                                    { prompt: "Select a student..." }, 
+                                    { class: "form-select", required: true } %>
+                  </div>
+
+                  <!-- Step 2: Select Location -->
+                  <div class="col-md-6">
+                    <%= form.label :location_id, "Location", class: "form-label" %>
+                    <%= form.select :location_id, 
+                                    options_from_collection_for_select(@locations, :id, :name, @lesson.location_id),
+                                    { prompt: "Select a location..." }, 
+                                    { class: "form-select", required: true, 
+                                      onchange: "updateAvailableTeachers()" } %>
+                  </div>
+
+                  <!-- Step 3: Select Teacher -->
+                  <div class="col-md-6">
+                    <%= form.label :teacher_id, "Teacher", class: "form-label" %>
+                    <select name="lesson[teacher_id]" id="teacher-select" class="form-select" required>
+                      <option value="">First select a location...</option>
+                    </select>
+                  </div>
+
+                  <!-- Step 4: Select Duration -->
+                  <div class="col-md-6">
+                    <%= form.label :duration, "Duration", class: "form-label" %>
+                    <%= form.select :duration, 
+                                    options_for_select(@duration_options.map { |label, value| ["#{label} minutes", value] }, @lesson.duration),
+                                    { prompt: "Select duration..." }, 
+                                    { class: "form-select", required: true, 
+                                      onchange: "updateAvailableTimeslots()" } %>
+                  </div>
+
+                  <!-- Step 5: Date Selection -->
+                  <div class="col-12">
+                    <label class="form-label">Available Dates</label>
+                    <div id="calendar-container" class="border rounded p-3 bg-light">
+                      <p class="text-muted text-center">Select a location and teacher to see available dates</p>
+                    </div>
+                  </div>
+
+                  <!-- Step 6: Time Selection -->
+                  <div class="col-12">
+                    <label class="form-label">Available Times</label>
+                    <div id="timeslots-container" class="border rounded p-3 bg-light">
+                      <p class="text-muted text-center">Select a date to see available time slots</p>
+                    </div>
+                  </div>
+
+                  <!-- Hidden field for selected datetime -->
+                  <%= form.hidden_field :start_time %>
+
+                  <!-- Lesson Plan -->
+                  <div class="col-12">
+                    <%= form.label :plan, "Lesson Plan (Optional)", class: "form-label" %>
+                    <%= form.text_area :plan, 
+                                       class: "form-control", 
+                                       rows: 3, 
+                                       placeholder: "Enter lesson plan, goals, or notes..." %>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <div class="col-12">
+                    <%= form.submit "Book Lesson", class: "btn btn-primary", id: "submit-btn", disabled: true %>
+                    <%= link_to "Cancel", admin_booking_index_path, class: "btn btn-outline-secondary" %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Booking Summary -->
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              <h6>Booking Summary</h6>
+            </div>
+            <div class="card-body">
+              <div id="booking-summary">
+                <div class="text-muted text-center">
+                  <i class="fas fa-calendar-plus fa-2x mb-2"></i>
+                  <p>Complete the form to see booking summary</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Quick Tips -->
+          <div class="card mt-3">
+            <div class="card-header">
+              <h6>Booking Tips</h6>
+            </div>
+            <div class="card-body">
+              <ul class="list-unstyled small">
+                <li class="mb-2">
+                  <i class="fas fa-check text-success"></i>
+                  <strong>Availability:</strong> Only available time slots are shown
+                </li>
+                <li class="mb-2">
+                  <i class="fas fa-clock text-info"></i>
+                  <strong>Duration:</strong> Select duration before choosing time
+                </li>
+                <li class="mb-2">
+                  <i class="fas fa-users text-warning"></i>
+                  <strong>Conflicts:</strong> System prevents double booking
+                </li>
+                <li class="mb-2">
+                  <i class="fas fa-calendar-check text-primary"></i>
+                  <strong>Validation:</strong> Lessons require both teacher and location availability
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedDate = '<%= @selected_date&.strftime("%Y-%m-%d") || Date.current.strftime("%Y-%m-%d") %>';
+let selectedTime = null;
+
+function updateAvailableTeachers() {
+  const locationId = document.getElementById('lesson_location_id').value;
+  const teacherSelect = document.getElementById('teacher-select');
+  
+  if (!locationId) {
+    teacherSelect.innerHTML = '<option value="">First select a location...</option>';
+    clearCalendar();
+    return;
+  }
+  
+  teacherSelect.innerHTML = '<option value="">Loading teachers...</option>';
+  
+  // Use current date if selectedDate is not set, invalid, or null
+  let dateParam;
+  if (selectedDate && selectedDate !== 'null' && selectedDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    dateParam = selectedDate;
+  } else {
+    dateParam = new Date().toISOString().split('T')[0];
+    selectedDate = dateParam; // Update selectedDate
+  }
+  
+  fetch(`/admin/booking/available_teachers?location_id=${locationId}&date=${dateParam}`)
+    .then(response => response.json())
+    .then(data => {
+      teacherSelect.innerHTML = data.html;
+      teacherSelect.addEventListener('change', updateAvailableDays);
+      clearCalendar();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      teacherSelect.innerHTML = '<option value="">Error loading teachers</option>';
+    });
+}
+
+function updateAvailableDays() {
+  const locationId = document.getElementById('lesson_location_id').value;
+  const teacherId = document.getElementById('teacher-select').value;
+  
+  if (!locationId || !teacherId) {
+    clearCalendar();
+    return;
+  }
+  
+  // Use current date if selectedDate is not set, invalid, or null
+  let dateParam;
+  if (selectedDate && selectedDate !== 'null' && selectedDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    dateParam = selectedDate;
+  } else {
+    dateParam = new Date().toISOString().split('T')[0];
+    selectedDate = dateParam; // Update selectedDate
+  }
+  
+  document.getElementById('calendar-container').innerHTML = '<p class="text-center">Loading available dates...</p>';
+  
+  fetch(`/admin/booking/available_days?location_id=${locationId}&teacher_id=${teacherId}&date=${dateParam}`)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('calendar-container').innerHTML = data.html;
+      updateBookingSummary();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById('calendar-container').innerHTML = '<p class="text-danger text-center">Error loading calendar</p>';
+    });
+}
+
+function updateAvailableTimeslots() {
+  if (!selectedDate || !selectedTime) return;
+  
+  // Validate selectedDate format
+  if (!selectedDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    console.error('Invalid date format:', selectedDate);
+    return;
+  }
+  
+  const locationId = document.getElementById('lesson_location_id').value;
+  const teacherId = document.getElementById('teacher-select').value;
+  const duration = document.getElementById('lesson_duration').value;
+  
+  if (!locationId || !teacherId || !duration) return;
+  
+  document.getElementById('timeslots-container').innerHTML = '<p class="text-center">Loading available times...</p>';
+  
+  fetch(`/admin/booking/available_timeslots?location_id=${locationId}&teacher_id=${teacherId}&date=${selectedDate}&duration=${duration}`)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('timeslots-container').innerHTML = data.html;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById('timeslots-container').innerHTML = '<p class="text-danger text-center">Error loading timeslots</p>';
+    });
+}
+
+function selectDate(date) {
+  // Validate date format
+  if (!date || !date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    console.error('Invalid date format:', date);
+    return;
+  }
+  
+  selectedDate = date;
+  
+  // Update visual selection
+  document.querySelectorAll('.calendar-day-mini').forEach(day => {
+    day.classList.remove('selected');
+  });
+  event.target.classList.add('selected');
+  
+  updateAvailableTimeslots();
+  updateBookingSummary();
+}
+
+function selectTimeslot(datetime) {
+  selectedTime = datetime;
+  document.getElementById('lesson_start_time').value = datetime;
+  
+  // Update visual selection
+  document.querySelectorAll('.timeslot-btn').forEach(btn => {
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-outline-primary');
+  });
+  event.target.classList.remove('btn-outline-primary');
+  event.target.classList.add('btn-primary');
+  
+  document.getElementById('submit-btn').disabled = false;
+  updateBookingSummary();
+}
+
+function updateBookingSummary() {
+  const studentSelect = document.getElementById('lesson_student_id');
+  const teacherSelect = document.getElementById('teacher-select');
+  const locationSelect = document.getElementById('lesson_location_id');
+  const durationSelect = document.getElementById('lesson_duration');
+  
+  const student = studentSelect.options[studentSelect.selectedIndex]?.text;
+  const teacher = teacherSelect.options[teacherSelect.selectedIndex]?.text;
+  const location = locationSelect.options[locationSelect.selectedIndex]?.text;
+  const duration = durationSelect.value;
+  
+  let summaryHtml = '<div class="small">';
+  
+  if (student && student !== 'Select a student...') {
+    summaryHtml += `<div class="mb-2"><strong>Student:</strong> ${student}</div>`;
+  }
+  if (teacher && teacher !== 'Select a teacher...') {
+    summaryHtml += `<div class="mb-2"><strong>Teacher:</strong> ${teacher}</div>`;
+  }
+  if (location && location !== 'Select a location...') {
+    summaryHtml += `<div class="mb-2"><strong>Location:</strong> ${location}</div>`;
+  }
+  if (selectedDate) {
+    const date = new Date(selectedDate);
+    summaryHtml += `<div class="mb-2"><strong>Date:</strong> ${date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>`;
+  }
+  if (selectedTime) {
+    const time = new Date(selectedTime);
+    summaryHtml += `<div class="mb-2"><strong>Time:</strong> ${time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>`;
+  }
+  if (duration) {
+    summaryHtml += `<div class="mb-2"><strong>Duration:</strong> ${duration} minutes</div>`;
+  }
+  
+  summaryHtml += '</div>';
+  
+  if (student || teacher || location || selectedDate || selectedTime || duration) {
+    document.getElementById('booking-summary').innerHTML = summaryHtml;
+  }
+}
+
+function clearCalendar() {
+  document.getElementById('calendar-container').innerHTML = '<p class="text-muted text-center">Select a location and teacher to see available dates</p>';
+  document.getElementById('timeslots-container').innerHTML = '<p class="text-muted text-center">Select a date to see available time slots</p>';
+  selectedDate = null;
+  selectedTime = null;
+  document.getElementById('submit-btn').disabled = true;
+}
+
+// Initialize form interactions
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('lesson_student_id').addEventListener('change', updateBookingSummary);
+  document.getElementById('lesson_location_id').addEventListener('change', updateBookingSummary);
+  document.getElementById('lesson_duration').addEventListener('change', updateBookingSummary);
+});
+</script>
+
+<style>
+.calendar-day.selected {
+  background-color: #0d6efd !important;
+  color: white;
+}
+
+.calendar-day.available {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calendar-day.available:hover {
+  background-color: #e3f2fd;
+}
+
+.timeslot-btn {
+  transition: all 0.2s;
+}
+
+.timeslot-btn:hover {
+  transform: translateY(-1px);
+}
+</style>

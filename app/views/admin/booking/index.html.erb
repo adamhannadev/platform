@@ -1,0 +1,183 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Booking Calendar</h1>
+        <div>
+          <%= link_to "Quick Book", new_admin_booking_path, class: "btn btn-primary" %>
+          <%= link_to "All Lessons", admin_lessons_path, class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title text-primary"><%= @availability_stats[:total_teacher_hours] %></h5>
+              <p class="card-text text-muted">Teacher Hours Available</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title text-info"><%= @availability_stats[:total_location_hours] %></h5>
+              <p class="card-text text-muted">Location Hours Available</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title text-success"><%= @availability_stats[:booked_hours] %></h5>
+              <p class="card-text text-muted">Hours Booked</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title text-warning"><%= @availability_stats[:utilization_rate] %>%</h5>
+              <p class="card-text text-muted">Utilization Rate</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendar Navigation -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5>
+                <%= link_to admin_booking_index_path(date: @current_date.prev_month), 
+                            class: "btn btn-outline-secondary btn-sm" do %>
+                  <i class="fas fa-chevron-left"></i> Prev
+                <% end %>
+                <%= @current_date.strftime("%B %Y") %>
+                <%= link_to admin_booking_index_path(date: @current_date.next_month), 
+                            class: "btn btn-outline-secondary btn-sm" do %>
+                  Next <i class="fas fa-chevron-right"></i>
+                <% end %>
+              </h5>
+              <div>
+                <%= link_to "Today", admin_booking_index_path, 
+                            class: "btn btn-outline-primary btn-sm" %>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div class="calendar-container">
+                <%= render 'calendar_month', date: @current_date %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Lessons -->
+      <% todays_lessons = @lessons_by_date[Date.current] || [] %>
+      <% if todays_lessons.any? %>
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h5>Today's Lessons (<%= Date.current.strftime("%A, %B %d") %>)</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <% todays_lessons.sort_by(&:start_time).each do |lesson| %>
+                    <div class="col-md-6 col-lg-4 mb-3">
+                      <div class="card border-left-primary">
+                        <div class="card-body">
+                          <div class="d-flex justify-content-between">
+                            <div>
+                              <h6 class="card-title"><%= lesson.start_time.strftime("%I:%M %p") %></h6>
+                              <p class="card-text">
+                                <strong><%= lesson.student.full_name %></strong><br>
+                                <small class="text-muted">
+                                  with <%= lesson.teacher.name %><br>
+                                  at <%= lesson.location.name %>
+                                </small>
+                              </p>
+                            </div>
+                            <div>
+                              <span class="badge bg-info"><%= lesson.duration %>m</span>
+                            </div>
+                          </div>
+                          <div class="mt-2">
+                            <%= link_to "View", admin_lesson_path(lesson), 
+                                        class: "btn btn-sm btn-outline-primary" %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<style>
+  .calendar-container {
+    overflow-x: auto;
+  }
+  
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background-color: #dee2e6;
+    border: 1px solid #dee2e6;
+  }
+  
+  .calendar-day {
+    background-color: white;
+    min-height: 120px;
+    padding: 8px;
+    position: relative;
+  }
+  
+  .calendar-day.other-month {
+    background-color: #f8f9fa;
+    color: #6c757d;
+  }
+  
+  .calendar-day.today {
+    background-color: #e3f2fd;
+  }
+  
+  .calendar-day-number {
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  
+  .lesson-indicator {
+    display: block;
+    background-color: #007bff;
+    color: white;
+    padding: 2px 4px;
+    margin: 1px 0;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .lesson-indicator:hover {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .border-left-primary {
+    border-left: 4px solid #007bff;
+  }
+</style>

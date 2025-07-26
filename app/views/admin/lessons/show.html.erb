@@ -1,0 +1,222 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Lesson Details</h1>
+        <div>
+          <%= link_to "Edit", edit_admin_lesson_path(@lesson), class: "btn btn-primary" %>
+          <%= link_to "Back to Lessons", admin_lessons_path, class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-8">
+          <!-- Main Lesson Information -->
+          <div class="card">
+            <div class="card-header">
+              <h5>Lesson Information</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <strong>Date:</strong>
+                  <p class="text-muted"><%= @lesson.start_time.strftime("%A, %B %d, %Y") %></p>
+                </div>
+                <div class="col-md-6">
+                  <strong>Time:</strong>
+                  <p class="text-muted">
+                    <%= @lesson.start_time.strftime("%I:%M %p") %> - 
+                    <%= (@lesson.start_time + @lesson.duration.minutes).strftime("%I:%M %p") %>
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <strong>Duration:</strong>
+                  <p class="text-muted">
+                    <span class="badge bg-info"><%= @lesson.duration %> minutes</span>
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <strong>Status:</strong>
+                  <p>
+                    <% if @lesson.start_time > Time.current %>
+                      <span class="badge bg-success">Upcoming</span>
+                    <% elsif @lesson.start_time + @lesson.duration.minutes < Time.current %>
+                      <span class="badge bg-secondary">Completed</span>
+                    <% else %>
+                      <span class="badge bg-warning">In Progress</span>
+                    <% end %>
+                  </p>
+                </div>
+              </div>
+              
+              <% if @lesson.plan.present? %>
+                <div class="mt-3">
+                  <strong>Lesson Plan:</strong>
+                  <div class="mt-2 p-3 border rounded bg-light">
+                    <%= simple_format(@lesson.plan) %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Related Lessons -->
+          <% if @related_lessons.any? %>
+            <div class="card mt-4">
+              <div class="card-header">
+                <h5>Other Lessons for <%= @lesson.student.full_name %></h5>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-sm">
+                    <thead>
+                      <tr>
+                        <th>Date/Time</th>
+                        <th>Teacher</th>
+                        <th>Location</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% @related_lessons.each do |lesson| %>
+                        <tr>
+                          <td><%= lesson.start_time.strftime("%m/%d/%Y %I:%M %p") %></td>
+                          <td><%= lesson.teacher.name %></td>
+                          <td><%= lesson.location.name %></td>
+                          <td><%= lesson.duration %> min</td>
+                          <td>
+                            <% if lesson.start_time > Time.current %>
+                              <span class="badge bg-success">Upcoming</span>
+                            <% elsif lesson.start_time + lesson.duration.minutes < Time.current %>
+                              <span class="badge bg-secondary">Completed</span>
+                            <% else %>
+                              <span class="badge bg-warning">In Progress</span>
+                            <% end %>
+                          </td>
+                          <td>
+                            <%= link_to "View", admin_lesson_path(lesson), class: "btn btn-xs btn-outline-primary" %>
+                          </td>
+                        </tr>
+                      <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        
+        <!-- Sidebar with Quick Info -->
+        <div class="col-md-4">
+          <!-- Student Information -->
+          <div class="card">
+            <div class="card-header">
+              <h5>Student</h5>
+            </div>
+            <div class="card-body">
+              <h6><%= @lesson.student.full_name %></h6>
+              <p class="text-muted mb-1">
+                <i class="fas fa-envelope"></i> <%= @lesson.student.email %>
+              </p>
+              
+              <% if @lesson.student.respond_to?(:phone) && @lesson.student.phone.present? %>
+                <p class="text-muted mb-1">
+                  <i class="fas fa-phone"></i> <%= @lesson.student.phone %>
+                </p>
+              <% end %>
+              
+              <% if @lesson.student.respond_to?(:level) && @lesson.student.level.present? %>
+                <p class="text-muted mb-1">
+                  <i class="fas fa-star"></i> Level: <%= @lesson.student.level %>
+                </p>
+              <% end %>
+              
+              <div class="mt-3">
+                <%= link_to "View Student", admin_student_path(@lesson.student), 
+                            class: "btn btn-sm btn-outline-primary" %>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Teacher Information -->
+          <div class="card mt-3">
+            <div class="card-header">
+              <h5>Teacher</h5>
+            </div>
+            <div class="card-body">
+              <h6><%= @lesson.teacher.name %></h6>
+              
+              <% if @lesson.teacher.respond_to?(:email) && @lesson.teacher.email.present? %>
+                <p class="text-muted mb-1">
+                  <i class="fas fa-envelope"></i> <%= @lesson.teacher.email %>
+                </p>
+              <% end %>
+              
+              <% if @lesson.teacher.respond_to?(:phone) && @lesson.teacher.phone.present? %>
+                <p class="text-muted mb-1">
+                  <i class="fas fa-phone"></i> <%= @lesson.teacher.phone %>
+                </p>
+              <% end %>
+              
+              <% if @lesson.teacher.respond_to?(:rate) && @lesson.teacher.rate.present? %>
+                <p class="text-muted mb-1">
+                  <i class="fas fa-dollar-sign"></i> $<%= number_with_precision(@lesson.teacher.rate, precision: 2) %>/hour
+                </p>
+              <% end %>
+              
+              <div class="mt-3">
+                <%= link_to "View Teacher", admin_teacher_path(@lesson.teacher), 
+                            class: "btn btn-sm btn-outline-primary" %>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Location Information -->
+          <div class="card mt-3">
+            <div class="card-header">
+              <h5>Location</h5>
+            </div>
+            <div class="card-body">
+              <h6><%= @lesson.location.name %></h6>
+              
+              <% if @lesson.location.address.present? %>
+                <p class="text-muted mb-1">
+                  <i class="fas fa-map-marker-alt"></i> <%= @lesson.location.address %>
+                </p>
+              <% end %>
+              
+              <div class="mt-3">
+                <%= link_to "View Location", admin_location_path(@lesson.location), 
+                            class: "btn btn-sm btn-outline-primary" %>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Quick Actions -->
+          <div class="card mt-3">
+            <div class="card-header">
+              <h6>Quick Actions</h6>
+            </div>
+            <div class="card-body">
+              <%= link_to "Edit Lesson", edit_admin_lesson_path(@lesson), 
+                          class: "btn btn-sm btn-outline-secondary d-block mb-2" %>
+              <%= link_to "Duplicate Lesson", new_admin_lesson_path(
+                            teacher_id: @lesson.teacher_id,
+                            student_id: @lesson.student_id, 
+                            location_id: @lesson.location_id,
+                            start_time: (@lesson.start_time + 1.week).strftime("%Y-%m-%dT%H:%M")
+                          ), 
+                          class: "btn btn-sm btn-outline-info d-block mb-2" %>
+              <%= link_to "Delete Lesson", admin_lesson_path(@lesson), 
+                          method: :delete, 
+                          confirm: "Are you sure you want to delete this lesson?", 
+                          class: "btn btn-sm btn-outline-danger d-block" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

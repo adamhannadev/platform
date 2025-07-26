@@ -1,0 +1,189 @@
+<% content_for :title, "Booking Requests" %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Booking Requests</h1>
+  
+  <div class="btn-group" role="group">
+    <input type="radio" class="btn-check" name="status-filter" id="pending-filter" autocomplete="off" checked>
+    <label class="btn btn-outline-warning" for="pending-filter">Pending</label>
+    
+    <input type="radio" class="btn-check" name="status-filter" id="all-filter" autocomplete="off">
+    <label class="btn btn-outline-secondary" for="all-filter">All Requests</label>
+  </div>
+</div>
+
+<% if @stats.any? %>
+  <div class="row mb-4">
+    <% @stats.each do |stat| %>
+      <div class="col-md-3">
+        <div class="card text-center">
+          <div class="card-body">
+            <h5 class="card-title text-<%= stat[:color] %>"><%= stat[:count] %></h5>
+            <p class="card-text"><%= stat[:label] %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<div id="pending-requests">
+  <% if @pending_requests.any? %>
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Pending Requests (<%= @pending_requests.count %>)</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Student</th>
+                <th>Teacher</th>
+                <th>Date & Time</th>
+                <th>Location</th>
+                <th>Duration</th>
+                <th>Requested</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @pending_requests.each do |request| %>
+                <tr>
+                  <td>
+                    <strong><%= request.student.full_name %></strong>
+                    <br><small class="text-muted"><%= request.student.email %></small>
+                  </td>
+                  <td>
+                    <strong><%= request.teacher.full_name %></strong>
+                    <% if request.teacher.hourly_rate.present? %>
+                      <br><small class="text-muted">$<%= request.teacher.hourly_rate %>/hr</small>
+                    <% end %>
+                  </td>
+                  <td>
+                    <strong><%= request.requested_date.strftime('%B %-d, %Y') %></strong>
+                    <br><%= request.requested_time.strftime('%-I:%M %p') %>
+                  </td>
+                  <td><%= request.location.name %></td>
+                  <td><%= request.duration %> min</td>
+                  <td>
+                    <%= time_ago_in_words(request.created_at) %> ago
+                    <br><small class="text-muted"><%= request.created_at.strftime('%m/%d %I:%M %p') %></small>
+                  </td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <%= link_to "View", admin_booking_request_path(request), 
+                                  class: "btn btn-sm btn-outline-primary" %>
+                      <%= button_to "Approve", approve_admin_booking_request_path(request), 
+                                    method: :patch, 
+                                    class: "btn btn-sm btn-success",
+                                    data: { confirm: "Approve this booking request?" } %>
+                      <%= button_to "Reject", reject_admin_booking_request_path(request), 
+                                    method: :patch, 
+                                    class: "btn btn-sm btn-danger",
+                                    data: { confirm: "Reject this booking request?" } %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle me-2"></i>
+      No pending booking requests at this time.
+    </div>
+  <% end %>
+</div>
+
+<div id="recent-requests" style="display: none;">
+  <% if @recent_requests.any? %>
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Recent Requests</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Student</th>
+                <th>Teacher</th>
+                <th>Date & Time</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Processed</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @recent_requests.each do |request| %>
+                <tr>
+                  <td>
+                    <strong><%= request.student.full_name %></strong>
+                    <br><small class="text-muted"><%= request.student.email %></small>
+                  </td>
+                  <td><%= request.teacher.full_name %></td>
+                  <td>
+                    <strong><%= request.requested_date.strftime('%B %-d, %Y') %></strong>
+                    <br><%= request.requested_time.strftime('%-I:%M %p') %>
+                  </td>
+                  <td><%= request.location.name %></td>
+                  <td>
+                    <span class="badge bg-<%= request.status == 'approved' ? 'success' : 'danger' %>">
+                      <%= request.status.titleize %>
+                    </span>
+                  </td>
+                  <td>
+                    <% if request.approved_at.present? %>
+                      <%= time_ago_in_words(request.approved_at) %> ago
+                      <br><small class="text-muted">by <%= request.approved_by&.full_name %></small>
+                    <% elsif request.rejected_at.present? %>
+                      <%= time_ago_in_words(request.rejected_at) %> ago
+                      <br><small class="text-muted">by <%= request.rejected_by&.full_name %></small>
+                    <% end %>
+                  </td>
+                  <td>
+                    <%= link_to "View", admin_booking_request_path(request), 
+                                class: "btn btn-sm btn-outline-primary" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle me-2"></i>
+      No recent booking requests found.
+    </div>
+  <% end %>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const pendingFilter = document.getElementById('pending-filter');
+  const allFilter = document.getElementById('all-filter');
+  const pendingSection = document.getElementById('pending-requests');
+  const recentSection = document.getElementById('recent-requests');
+  
+  pendingFilter.addEventListener('change', function() {
+    if (this.checked) {
+      pendingSection.style.display = 'block';
+      recentSection.style.display = 'none';
+    }
+  });
+  
+  allFilter.addEventListener('change', function() {
+    if (this.checked) {
+      pendingSection.style.display = 'none';
+      recentSection.style.display = 'block';
+    }
+  });
+});
+</script>

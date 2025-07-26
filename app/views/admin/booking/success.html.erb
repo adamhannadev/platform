@@ -1,0 +1,55 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card border-success">
+        <div class="card-header bg-success text-white text-center">
+          <h4 class="mb-0">
+            <i class="fas fa-check-circle me-2"></i>
+            Lesson Successfully Booked!
+          </h4>
+        </div>
+        <div class="card-body text-center">
+          <h5 class="text-success mb-4">Booking Confirmation</h5>
+          
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <strong>Student:</strong>
+              <p class="text-muted"><%= @lesson.student.full_name %></p>
+            </div>
+            <div class="col-md-6">
+              <strong>Teacher:</strong>
+              <p class="text-muted"><%= @lesson.teacher.name %></p>
+            </div>
+            <div class="col-md-6">
+              <strong>Location:</strong>
+              <p class="text-muted"><%= @lesson.location.name %></p>
+            </div>
+            <div class="col-md-6">
+              <strong>Date & Time:</strong>
+              <p class="text-muted">
+                <%= @lesson.start_time.strftime("%A, %B %d, %Y") %><br>
+                <%= @lesson.start_time.strftime("%I:%M %p") %> - 
+                <%= (@lesson.start_time + @lesson.duration.minutes).strftime("%I:%M %p") %>
+              </p>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-12">
+              <div class="btn-group" role="group">
+                <%= link_to "View Lesson", admin_lesson_path(@lesson), 
+                            class: "btn btn-primary" %>
+                <%= link_to "Book Another", new_admin_booking_path, 
+                            class: "btn btn-outline-primary" %>
+                <%= link_to "Calendar View", admin_booking_index_path, 
+                            class: "btn btn-outline-secondary" %>
+                <%= link_to "All Lessons", admin_lessons_path, 
+                            class: "btn btn-outline-info" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

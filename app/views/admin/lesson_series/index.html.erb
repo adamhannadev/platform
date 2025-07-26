@@ -1,0 +1,219 @@
+<% content_for :title, "Lesson Series Management" %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Lesson Series Management</h1>
+  <%= link_to "Create New Series", new_admin_lesson_series_path, class: "btn btn-primary" %>
+</div>
+
+<!-- Active Series -->
+<% if @active_series.any? %>
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Active Series (<%= @active_series.count %>)</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Title</th>
+              <th>Student</th>
+              <th>Teacher</th>
+              <th>Schedule</th>
+              <th>Progress</th>
+              <th>Next Lesson</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @active_series.each do |series| %>
+              <tr>
+                <td>
+                  <strong><%= series.title %></strong>
+                  <br><small class="text-muted"><%= series.location.name %></small>
+                </td>
+                <td>
+                  <%= series.student.full_name %>
+                  <br><small class="text-muted"><%= series.student.email %></small>
+                </td>
+                <td>
+                  <%= series.teacher.full_name %>
+                  <% if series.teacher.hourly_rate.present? %>
+                    <br><small class="text-muted">$<%= series.teacher.hourly_rate %>/hr</small>
+                  <% end %>
+                </td>
+                <td>
+                  <%= Date::DAYNAMES[series.day_of_week] %>s
+                  <br><%= series.time_of_day.strftime('%-I:%M %p') %>
+                  <br><small class="text-muted"><%= series.duration %> min</small>
+                </td>
+                <td>
+                  <% completed = series.lessons.where(status: ['completed', 'attended']).count %>
+                  <% total = series.lessons.count %>
+                  <% percentage = total > 0 ? (completed.to_f / total * 100).round(1) : 0 %>
+                  <div class="progress" style="height: 20px;">
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: <%= "#{percentage}%" %>" 
+                         aria-valuenow="<%= completed %>" 
+                         aria-valuemin="0" 
+                         aria-valuemax="<%= total %>">
+                      <%= completed %>/<%= total %>
+                    </div>
+                  </div>
+                  <small class="text-muted"><%= percentage %>% complete</small>
+                </td>
+                <td>
+                  <% next_lesson = series.lessons.where('start_time > ?', Time.current).where(status: ['scheduled', 'confirmed']).first %>
+                  <% if next_lesson %>
+                    <%= next_lesson.start_time.strftime('%m/%d') %>
+                    <br><small class="text-muted"><%= next_lesson.start_time.strftime('%-I:%M %p') %></small>
+                  <% else %>
+                    <span class="text-muted">None scheduled</span>
+                  <% end %>
+                </td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <%= link_to "View", admin_lesson_series_path(series), 
+                                class: "btn btn-sm btn-outline-primary" %>
+                    <%= link_to "Edit", edit_admin_lesson_series_path(series), 
+                                class: "btn btn-sm btn-outline-secondary" %>
+                    <%= button_to "Pause", pause_admin_lesson_series_path(series), 
+                                  method: :patch,
+                                  class: "btn btn-sm btn-warning",
+                                  data: { confirm: "Pause this lesson series?" } %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    No active lesson series found.
+  </div>
+<% end %>
+
+<!-- Paused Series -->
+<% if @paused_series.any? %>
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Paused Series (<%= @paused_series.count %>)</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Title</th>
+              <th>Student</th>
+              <th>Teacher</th>
+              <th>Schedule</th>
+              <th>Paused</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @paused_series.each do |series| %>
+              <tr class="table-warning">
+                <td>
+                  <strong><%= series.title %></strong>
+                  <br><small class="text-muted"><%= series.location.name %></small>
+                </td>
+                <td>
+                  <%= series.student.full_name %>
+                  <br><small class="text-muted"><%= series.student.email %></small>
+                </td>
+                <td><%= series.teacher.full_name %></td>
+                <td>
+                  <%= Date::DAYNAMES[series.day_of_week] %>s
+                  <br><%= series.time_of_day.strftime('%-I:%M %p') %>
+                </td>
+                <td>
+                  <%= time_ago_in_words(series.updated_at) %> ago
+                  <br><small class="text-muted"><%= series.updated_at.strftime('%m/%d/%Y') %></small>
+                </td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <%= link_to "View", admin_lesson_series_path(series), 
+                                class: "btn btn-sm btn-outline-primary" %>
+                    <%= button_to "Resume", resume_admin_lesson_series_path(series), 
+                                  method: :patch,
+                                  class: "btn btn-sm btn-success",
+                                  data: { confirm: "Resume this lesson series?" } %>
+                    <%= link_to "Delete", admin_lesson_series_path(series), 
+                                method: :delete,
+                                class: "btn btn-sm btn-outline-danger",
+                                data: { confirm: "Permanently delete this lesson series?" } %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<!-- Recently Completed Series -->
+<% if @completed_series.any? %>
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">Recently Completed Series</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Title</th>
+              <th>Student</th>
+              <th>Teacher</th>
+              <th>Status</th>
+              <th>Completed</th>
+              <th>Total Lessons</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @completed_series.each do |series| %>
+              <tr class="<%= series.status == 'cancelled' ? 'table-danger' : 'table-success' %>">
+                <td>
+                  <strong><%= series.title %></strong>
+                  <br><small class="text-muted"><%= series.location.name %></small>
+                </td>
+                <td>
+                  <%= series.student.full_name %>
+                </td>
+                <td><%= series.teacher.full_name %></td>
+                <td>
+                  <span class="badge bg-<%= series.status == 'cancelled' ? 'danger' : 'success' %>">
+                    <%= series.status.titleize %>
+                  </span>
+                </td>
+                <td>
+                  <%= time_ago_in_words(series.updated_at) %> ago
+                  <br><small class="text-muted"><%= series.updated_at.strftime('%m/%d/%Y') %></small>
+                </td>
+                <td>
+                  <%= series.lessons.count %> lessons
+                  <br><small class="text-muted">
+                    <%= series.lessons.where(status: ['completed', 'attended']).count %> attended
+                  </small>
+                </td>
+                <td>
+                  <%= link_to "View", admin_lesson_series_path(series), 
+                              class: "btn btn-sm btn-outline-primary" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<% end %>

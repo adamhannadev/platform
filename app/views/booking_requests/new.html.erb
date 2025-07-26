@@ -1,0 +1,161 @@
+<% content_for :title, "Request a Lesson" %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Request a Lesson</h1>
+      <%= link_to "← Back to My Requests", booking_requests_path, class: "btn btn-outline-secondary" %>
+    </div>
+
+    <%= form_with model: @booking_request, local: true, class: "row g-3" do |form| %>
+      <% if @booking_request.errors.any? %>
+        <div class="col-12">
+          <div class="alert alert-danger">
+            <h6>Please fix the following errors:</h6>
+            <ul class="mb-0">
+              <% @booking_request.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Lesson Details</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <%= form.label :teacher_id, "Teacher", class: "form-label" %>
+                <%= form.select :teacher_id, 
+                                options_from_collection_for_select(@teachers, :id, :full_name, @booking_request.teacher_id),
+                                { prompt: "Select a teacher..." },
+                                { class: "form-select", required: true, id: "teacher-select" } %>
+                <div class="form-text">Choose your preferred teacher for this lesson.</div>
+              </div>
+
+              <div class="col-md-6">
+                <%= form.label :location_id, "Location", class: "form-label" %>
+                <%= form.select :location_id, 
+                                options_from_collection_for_select(@locations, :id, :name, @booking_request.location_id),
+                                { prompt: "Select a location..." },
+                                { class: "form-select", required: true, id: "location-select" } %>
+                <div class="form-text">Where would you like to have your lesson?</div>
+              </div>
+
+              <div class="col-md-4">
+                <%= form.label :requested_date, "Preferred Date", class: "form-label" %>
+                <%= form.date_field :requested_date, 
+                                    class: "form-control", 
+                                    required: true,
+                                    min: Date.current,
+                                    id: "date-picker" %>
+                <div class="form-text">Choose your preferred lesson date.</div>
+              </div>
+
+              <div class="col-md-4">
+                <%= form.label :requested_time, "Preferred Time", class: "form-label" %>
+                <%= form.time_field :requested_time, 
+                                    class: "form-control", 
+                                    required: true,
+                                    id: "time-picker" %>
+                <div class="form-text">What time works best for you?</div>
+              </div>
+
+              <div class="col-md-4">
+                <%= form.label :duration, "Duration (minutes)", class: "form-label" %>
+                <%= form.select :duration, 
+                                options_for_select([
+                                  ['30 minutes', 30],
+                                  ['45 minutes', 45], 
+                                  ['60 minutes', 60],
+                                  ['90 minutes', 90],
+                                  ['120 minutes', 120]
+                                ], @booking_request.duration || 60),
+                                {},
+                                { class: "form-select", required: true } %>
+                <div class="form-text">How long should your lesson be?</div>
+              </div>
+
+              <div class="col-12">
+                <%= form.label :notes, "Additional Notes (Optional)", class: "form-label" %>
+                <%= form.text_area :notes, 
+                                   class: "form-control", 
+                                   rows: 3,
+                                   placeholder: "Any specific requests, goals, or information the teacher should know..." %>
+                <div class="form-text">Share any additional details that might help with your lesson planning.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12" id="availability-info" style="display: none;">
+        <div class="alert alert-info">
+          <h6><i class="fas fa-info-circle me-2"></i>Availability Information</h6>
+          <div id="availability-details"></div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">Important Information</h6>
+            <ul class="list-unstyled mb-0">
+              <li><i class="fas fa-clock text-primary me-2"></i>Booking requests are reviewed by our admin team within 24 hours</li>
+              <li><i class="fas fa-check-circle text-success me-2"></i>You'll receive email confirmation once your request is approved</li>
+              <li><i class="fas fa-edit text-info me-2"></i>You can cancel pending requests anytime from your booking history</li>
+              <li><i class="fas fa-calendar text-warning me-2"></i>Please request lessons at least 24 hours in advance</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="d-flex justify-content-between">
+          <%= link_to "Cancel", booking_requests_path, class: "btn btn-outline-secondary" %>
+          <%= form.submit "Submit Request", class: "btn btn-primary", id: "submit-btn" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const teacherSelect = document.getElementById('teacher-select');
+  const locationSelect = document.getElementById('location-select');
+  const datePicker = document.getElementById('date-picker');
+  const timePicker = document.getElementById('time-picker');
+  const availabilityInfo = document.getElementById('availability-info');
+  const availabilityDetails = document.getElementById('availability-details');
+  
+  function checkAvailability() {
+    const teacherId = teacherSelect.value;
+    const locationId = locationSelect.value;
+    const date = datePicker.value;
+    const time = timePicker.value;
+    
+    if (teacherId && locationId && date && time) {
+      // Here you could make an AJAX call to check availability
+      // For now, we'll just show a placeholder message
+      availabilityDetails.innerHTML = `
+        <p class="mb-1"><strong>Teacher:</strong> ${teacherSelect.options[teacherSelect.selectedIndex].text}</p>
+        <p class="mb-1"><strong>Location:</strong> ${locationSelect.options[locationSelect.selectedIndex].text}</p>
+        <p class="mb-1"><strong>Date & Time:</strong> ${date} at ${time}</p>
+        <p class="mb-0 text-muted">Availability will be verified when your request is reviewed.</p>
+      `;
+      availabilityInfo.style.display = 'block';
+    } else {
+      availabilityInfo.style.display = 'none';
+    }
+  }
+  
+  [teacherSelect, locationSelect, datePicker, timePicker].forEach(element => {
+    element.addEventListener('change', checkAvailability);
+  });
+});
+</script>

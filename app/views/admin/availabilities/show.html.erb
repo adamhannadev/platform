@@ -155,7 +155,7 @@
                           <td><%= lesson.location.name %></td>
                           <td><%= lesson.duration %> min</td>
                           <td>
-                            <%= link_to "View", admin_lesson_path(lesson), class: "btn btn-xs btn-outline-primary" if defined?(admin_lesson_path) %>
+                            <%= link_to "View", admin_lesson_path(lesson), class: "btn btn-xs btn-outline-primary" %>
                           </td>
                         </tr>
                       <% end %>

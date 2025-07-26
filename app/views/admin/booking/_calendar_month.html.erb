@@ -1,0 +1,47 @@
+<div class="calendar-grid">
+  <!-- Header Row -->
+  <% %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday].each do |day| %>
+    <div class="calendar-day text-center fw-bold bg-light border-bottom">
+      <%= day[0..2] %>
+    </div>
+  <% end %>
+  
+  <!-- Calendar Days -->
+  <% start_date = date.beginning_of_month.beginning_of_week %>
+  <% end_date = date.end_of_month.end_of_week %>
+  
+  <% (start_date..end_date).each do |day| %>
+    <div class="calendar-day <%= 'other-month' if day.month != date.month %> <%= 'today' if day == Date.current %>">
+      <div class="calendar-day-number">
+        <%= day.day %>
+      </div>
+      
+      <!-- Show lessons for this day -->
+      <% day_lessons = @lessons_by_date[day] || [] %>
+      <% day_lessons.sort_by(&:start_time).first(3).each do |lesson| %>
+        <%= link_to admin_lesson_path(lesson), class: "lesson-indicator", 
+                    title: "#{lesson.start_time.strftime('%I:%M %p')} - #{lesson.student.full_name} with #{lesson.teacher.name}" do %>
+          <%= lesson.start_time.strftime("%I:%M") %> <%= lesson.student.full_name.split(' ').first %>
+        <% end %>
+      <% end %>
+      
+      <!-- Show indicator if there are more lessons -->
+      <% if day_lessons.count > 3 %>
+        <div class="lesson-indicator bg-secondary">
+          +<%= day_lessons.count - 3 %> more
+        </div>
+      <% end %>
+      
+      <!-- Quick book link for future dates -->
+      <% if day >= Date.current %>
+        <div class="mt-auto">
+          <%= link_to new_admin_booking_path(date: day), 
+                      class: "btn btn-sm btn-outline-primary w-100 mt-1",
+                      style: "font-size: 0.7rem;" do %>
+            <i class="fas fa-plus"></i> Book
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

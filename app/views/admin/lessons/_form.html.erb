@@ -1,0 +1,130 @@
+<%= form_with model: [:admin, @lesson], local: true, class: "row g-3" do |form| %>
+  <% if @lesson.errors.any? %>
+    <div class="col-12">
+      <div class="alert alert-danger">
+        <h6>Please fix the following errors:</h6>
+        <ul class="mb-0">
+          <% @lesson.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="col-md-6">
+    <%= form.label :student_id, "Student", class: "form-label" %>
+    <%= form.select :student_id, 
+                    options_from_collection_for_select(@students, :id, :full_name, @lesson.student_id),
+                    { prompt: "Select a student..." }, 
+                    { class: "form-select", required: true } %>
+  </div>
+
+  <div class="col-md-6">
+    <%= form.label :teacher_id, "Teacher", class: "form-label" %>
+    <%= form.select :teacher_id, 
+                    options_from_collection_for_select(@teachers, :id, :name, @lesson.teacher_id),
+                    { prompt: "Select a teacher..." }, 
+                    { class: "form-select", required: true } %>
+  </div>
+
+  <div class="col-md-6">
+    <%= form.label :location_id, "Location", class: "form-label" %>
+    <%= form.select :location_id, 
+                    options_from_collection_for_select(@locations, :id, :name, @lesson.location_id),
+                    { prompt: "Select a location..." }, 
+                    { class: "form-select", required: true } %>
+  </div>
+
+  <div class="col-md-6">
+    <%= form.label :duration, "Duration", class: "form-label" %>
+    <%= form.select :duration, 
+                    options_for_select(@duration_options.map { |label, value| ["#{label} minutes", value] }, @lesson.duration),
+                    { prompt: "Select duration..." }, 
+                    { class: "form-select", required: true } %>
+  </div>
+
+  <div class="col-md-6">
+    <%= form.label :start_time, "Date", class: "form-label" %>
+    <%= form.date_field :start_time, 
+                        value: @lesson.start_time&.strftime("%Y-%m-%d"), 
+                        class: "form-control", 
+                        required: true %>
+  </div>
+
+  <div class="col-md-6">
+    <%= form.label :start_time, "Time", class: "form-label" %>
+    <%= form.time_field :start_time, 
+                        value: @lesson.start_time&.strftime("%H:%M"), 
+                        class: "form-control", 
+                        required: true %>
+  </div>
+
+  <div class="col-12">
+    <%= form.label :plan, "Lesson Plan", class: "form-label" %>
+    <%= form.text_area :plan, 
+                       class: "form-control", 
+                       rows: 4, 
+                       placeholder: "Enter lesson plan, goals, or notes..." %>
+    <div class="form-text">
+      Optional: Add details about what will be covered in this lesson, specific goals, or any special notes.
+    </div>
+  </div>
+
+  <!-- Availability Check Section -->
+  <div class="col-12">
+    <div class="card bg-light">
+      <div class="card-body">
+        <h6 class="card-title">
+          <i class="fas fa-info-circle text-info"></i> 
+          Availability Check
+        </h6>
+        <p class="card-text small text-muted">
+          This lesson will be validated against teacher and location availability. 
+          Make sure both the teacher and location are available at the selected time.
+        </p>
+        <div class="d-flex gap-2">
+          <span class="badge bg-info">Teacher availability required</span>
+          <span class="badge bg-info">Location availability required</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="d-flex gap-2">
+      <%= form.submit (@lesson.new_record? ? "Create Lesson" : "Update Lesson"), 
+                      class: "btn btn-primary" %>
+      <%= link_to "Cancel", 
+                  (@lesson.new_record? ? admin_lessons_path : admin_lesson_path(@lesson)), 
+                  class: "btn btn-outline-secondary" %>
+    </div>
+  </div>
+<% end %>
+
+<script>
+  // Combine date and time inputs for proper datetime submission
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const dateInput = document.querySelector('input[type="date"]');
+    const timeInput = document.querySelector('input[type="time"]');
+    
+    form.addEventListener('submit', function(e) {
+      if (dateInput.value && timeInput.value) {
+        const datetime = new Date(dateInput.value + 'T' + timeInput.value);
+        
+        // Create a hidden input with the combined datetime
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'lesson[start_time]';
+        hiddenInput.value = datetime.toISOString();
+        
+        // Remove the name attributes from original inputs to prevent conflicts
+        dateInput.removeAttribute('name');
+        timeInput.removeAttribute('name');
+        
+        form.appendChild(hiddenInput);
+      }
+    });
+  });
+</script>

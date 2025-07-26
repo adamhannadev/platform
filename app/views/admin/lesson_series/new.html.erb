@@ -1,0 +1,207 @@
+<% content_for :title, "Create Lesson Series" %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Create Lesson Series</h1>
+      <%= link_to "← Back to Series", admin_lesson_series_index_path, class: "btn btn-outline-secondary" %>
+    </div>
+
+    <%= form_with model: [:admin, @lesson_series], local: true, class: "row g-3" do |form| %>
+      <% if @lesson_series.errors.any? %>
+        <div class="col-12">
+          <div class="alert alert-danger">
+            <h6>Please fix the following errors:</h6>
+            <ul class="mb-0">
+              <% @lesson_series.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Series Information</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12">
+                <%= form.label :title, "Series Title", class: "form-label" %>
+                <%= form.text_field :title, 
+                                    class: "form-control", 
+                                    required: true,
+                                    placeholder: "e.g., Weekly Piano Lessons with John" %>
+                <div class="form-text">A descriptive name for this recurring lesson series.</div>
+              </div>
+
+              <div class="col-md-4">
+                <%= form.label :student_id, "Student", class: "form-label" %>
+                <%= form.select :student_id, 
+                                options_from_collection_for_select(@students, :id, :full_name, @lesson_series.student_id),
+                                { prompt: "Select a student..." },
+                                { class: "form-select", required: true } %>
+              </div>
+
+              <div class="col-md-4">
+                <%= form.label :teacher_id, "Teacher", class: "form-label" %>
+                <%= form.select :teacher_id, 
+                                options_from_collection_for_select(@teachers, :id, :full_name, @lesson_series.teacher_id),
+                                { prompt: "Select a teacher..." },
+                                { class: "form-select", required: true } %>
+              </div>
+
+              <div class="col-md-4">
+                <%= form.label :location_id, "Location", class: "form-label" %>
+                <%= form.select :location_id, 
+                                options_from_collection_for_select(@locations, :id, :name, @lesson_series.location_id),
+                                { prompt: "Select a location..." },
+                                { class: "form-select", required: true } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Schedule Settings</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <%= form.label :day_of_week, "Day of Week", class: "form-label" %>
+                <%= form.select :day_of_week, 
+                                options_for_select([
+                                  ['Sunday', 0],
+                                  ['Monday', 1],
+                                  ['Tuesday', 2],
+                                  ['Wednesday', 3],
+                                  ['Thursday', 4],
+                                  ['Friday', 5],
+                                  ['Saturday', 6]
+                                ], @lesson_series.day_of_week),
+                                { prompt: "Select day..." },
+                                { class: "form-select", required: true } %>
+              </div>
+
+              <div class="col-md-3">
+                <%= form.label :time_of_day, "Time", class: "form-label" %>
+                <%= form.time_field :time_of_day, 
+                                    class: "form-control", 
+                                    required: true %>
+              </div>
+
+              <div class="col-md-3">
+                <%= form.label :duration, "Duration (minutes)", class: "form-label" %>
+                <%= form.select :duration, 
+                                options_for_select([
+                                  ['30 minutes', 30],
+                                  ['45 minutes', 45], 
+                                  ['60 minutes', 60],
+                                  ['90 minutes', 90],
+                                  ['120 minutes', 120]
+                                ], @lesson_series.duration || 60),
+                                {},
+                                { class: "form-select", required: true } %>
+              </div>
+
+              <div class="col-md-3">
+                <%= form.label :start_date, "Start Date", class: "form-label" %>
+                <%= form.date_field :start_date, 
+                                    class: "form-control", 
+                                    required: true,
+                                    min: Date.current %>
+              </div>
+
+              <div class="col-md-6">
+                <%= form.label :end_date, "End Date", class: "form-label" %>
+                <%= form.date_field :end_date, 
+                                    class: "form-control", 
+                                    required: true,
+                                    value: @lesson_series.end_date %>
+                <div class="form-text">Lessons will be automatically generated through this date.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Estimated Lessons</label>
+                <div class="form-control-plaintext" id="lesson-estimate">
+                  Select dates to see estimate
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Additional Information</h5>
+          </div>
+          <div class="card-body">
+            <%= form.label :notes, "Notes (Optional)", class: "form-label" %>
+            <%= form.text_area :notes, 
+                               class: "form-control", 
+                               rows: 3,
+                               placeholder: "Any special instructions, goals, or information about this lesson series..." %>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="d-flex justify-content-between">
+          <%= link_to "Cancel", admin_lesson_series_index_path, class: "btn btn-outline-secondary" %>
+          <%= form.submit "Create Series & Generate Lessons", class: "btn btn-primary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const startDateField = document.querySelector('input[name="lesson_series[start_date]"]');
+  const endDateField = document.querySelector('input[name="lesson_series[end_date]"]');
+  const dayOfWeekField = document.querySelector('select[name="lesson_series[day_of_week]"]');
+  const estimateDiv = document.getElementById('lesson-estimate');
+  
+  function updateEstimate() {
+    const startDate = startDateField.value;
+    const endDate = endDateField.value;
+    const dayOfWeek = dayOfWeekField.value;
+    
+    if (startDate && endDate && dayOfWeek !== '') {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const targetDayOfWeek = parseInt(dayOfWeek);
+      
+      // Find first occurrence of target day
+      let current = new Date(start);
+      while (current.getDay() !== targetDayOfWeek && current <= end) {
+        current.setDate(current.getDate() + 1);
+      }
+      
+      // Count occurrences
+      let count = 0;
+      while (current <= end) {
+        count++;
+        current.setDate(current.getDate() + 7);
+      }
+      
+      estimateDiv.innerHTML = `<strong>${count}</strong> lessons will be generated`;
+      estimateDiv.className = 'form-control-plaintext text-success';
+    } else {
+      estimateDiv.innerHTML = 'Select dates and day to see estimate';
+      estimateDiv.className = 'form-control-plaintext text-muted';
+    }
+  }
+  
+  [startDateField, endDateField, dayOfWeekField].forEach(field => {
+    field.addEventListener('change', updateEstimate);
+  });
+});
+</script>

@@ -1,0 +1,114 @@
+<div class="mini-calendar">
+  <div class="text-center mb-3">
+    <h6><%= date.strftime("%B %Y") %></h6>
+  </div>
+  
+  <div class="calendar-grid-mini">
+    <!-- Header Row -->
+    <% %w[Sun Mon Tue Wed Thu Fri Sat].each do |day| %>
+      <div class="calendar-header"><%= day %></div>
+    <% end %>
+    
+    <!-- Calendar Days -->
+    <% start_date = date.beginning_of_month.beginning_of_week %>
+    <% end_date = date.end_of_month.end_of_week %>
+    
+    <% (start_date..end_date).each do |day| %>
+      <div class="calendar-day-mini 
+                  <%= 'other-month' if day.month != date.month %> 
+                  <%= 'today' if day == Date.current %>
+                  <%= 'available' if available_days.include?(day) && day >= Date.current %>"
+           <%= "onclick='selectDate(\"#{day.strftime('%Y-%m-%d')}\")'" if available_days.include?(day) && day >= Date.current %>>
+        <%= day.day %>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="mt-3 small text-muted">
+    <div class="d-flex align-items-center mb-1">
+      <div class="legend-box available"></div>
+      <span>Available dates</span>
+    </div>
+    <div class="d-flex align-items-center">
+      <div class="legend-box today"></div>
+      <span>Today</span>
+    </div>
+  </div>
+</div>
+
+<style>
+.mini-calendar {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.calendar-grid-mini {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.calendar-header {
+  background-color: #f8f9fa;
+  padding: 8px 4px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
+.calendar-day-mini {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  position: relative;
+}
+
+.calendar-day-mini.other-month {
+  color: #6c757d;
+  background-color: #f8f9fa;
+}
+
+.calendar-day-mini.today {
+  background-color: #ffc107;
+  color: #000;
+  font-weight: bold;
+}
+
+.calendar-day-mini.available {
+  background-color: #d4edda;
+  color: #155724;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.calendar-day-mini.available:hover {
+  background-color: #c3e6cb;
+  transform: scale(1.1);
+}
+
+.calendar-day-mini.selected {
+  background-color: #0d6efd !important;
+  color: white !important;
+  transform: scale(1.1);
+}
+
+.legend-box {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  margin-right: 8px;
+}
+
+.legend-box.available {
+  background-color: #d4edda;
+}
+
+.legend-box.today {
+  background-color: #ffc107;
+}
+</style>

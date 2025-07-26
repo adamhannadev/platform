@@ -1,0 +1,42 @@
+<% if timeslots.any? %>
+  <div class="timeslots-grid">
+    <% timeslots.each do |timeslot| %>
+      <button type="button" 
+              class="btn btn-outline-primary timeslot-btn" 
+              onclick="selectTimeslot('<%= timeslot.iso8601 %>')">
+        <%= timeslot.strftime('%I:%M %p') %>
+      </button>
+    <% end %>
+  </div>
+  
+  <div class="mt-3 small text-muted">
+    <i class="fas fa-info-circle"></i>
+    Available <%= duration %>-minute slots for <%= date.strftime('%A, %B %d') %>
+  </div>
+<% else %>
+  <div class="text-center text-muted">
+    <i class="fas fa-calendar-times fa-2x mb-2"></i>
+    <p>No available time slots for the selected date and duration.</p>
+    <small>Try selecting a different date or duration.</small>
+  </div>
+<% end %>
+
+<style>
+.timeslots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.timeslot-btn {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.timeslot-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>

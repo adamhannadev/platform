@@ -1,0 +1,166 @@
+<% content_for :title, "Booking Request Details" %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Booking Request Details</h1>
+      <%= link_to "← Back to My Requests", booking_requests_path, class: "btn btn-outline-secondary" %>
+    </div>
+
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Request #<%= @booking_request.id %></h5>
+        <span class="badge bg-<%= @booking_request.status == 'pending' ? 'warning text-dark' : 
+                                @booking_request.status == 'approved' ? 'success' : 
+                                @booking_request.status == 'rejected' ? 'danger' : 'secondary' %> fs-6">
+          <%= @booking_request.status.titleize %>
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="text-muted mb-3">Lesson Information</h6>
+            <div class="mb-3">
+              <strong>Teacher:</strong><br>
+              <%= @booking_request.teacher.full_name %>
+              <% if @booking_request.teacher.email.present? %>
+                <br><small class="text-muted"><%= @booking_request.teacher.email %></small>
+              <% end %>
+            </div>
+            
+            <div class="mb-3">
+              <strong>Location:</strong><br>
+              <%= @booking_request.location.name %>
+              <% if @booking_request.location.address.present? %>
+                <br><small class="text-muted"><%= @booking_request.location.address %></small>
+              <% end %>
+            </div>
+            
+            <div class="mb-3">
+              <strong>Date & Time:</strong><br>
+              <%= @booking_request.requested_date.strftime('%A, %B %-d, %Y') %><br>
+              <%= @booking_request.requested_time.strftime('%-I:%M %p') %>
+            </div>
+            
+            <div class="mb-3">
+              <strong>Duration:</strong><br>
+              <%= @booking_request.duration %> minutes
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <h6 class="text-muted mb-3">Request Timeline</h6>
+            <div class="mb-3">
+              <strong>Submitted:</strong><br>
+              <%= @booking_request.created_at.strftime('%B %-d, %Y at %-I:%M %p') %>
+              <br><small class="text-muted"><%= time_ago_in_words(@booking_request.created_at) %> ago</small>
+            </div>
+            
+            <% if @booking_request.approved_at.present? %>
+              <div class="mb-3 text-success">
+                <strong>Approved:</strong><br>
+                <%= @booking_request.approved_at.strftime('%B %-d, %Y at %-I:%M %p') %>
+                <% if @booking_request.approved_by.present? %>
+                  <br><small>by <%= @booking_request.approved_by.full_name %></small>
+                <% end %>
+              </div>
+            <% elsif @booking_request.rejected_at.present? %>
+              <div class="mb-3 text-danger">
+                <strong>Rejected:</strong><br>
+                <%= @booking_request.rejected_at.strftime('%B %-d, %Y at %-I:%M %p') %>
+                <% if @booking_request.rejected_by.present? %>
+                  <br><small>by <%= @booking_request.rejected_by.full_name %></small>
+                <% end %>
+              </div>
+            <% elsif @booking_request.cancelled_at.present? %>
+              <div class="mb-3 text-secondary">
+                <strong>Cancelled:</strong><br>
+                <%= @booking_request.cancelled_at.strftime('%B %-d, %Y at %-I:%M %p') %>
+              </div>
+            <% end %>
+            
+            <% if @booking_request.teacher.hourly_rate.present? %>
+              <div class="mb-3">
+                <strong>Expected Cost:</strong><br>
+                $<%= (@booking_request.teacher.hourly_rate * (@booking_request.duration / 60.0)).round(2) %>
+                <br><small class="text-muted">($<%= @booking_request.teacher.hourly_rate %>/hour × <%= (@booking_request.duration / 60.0).round(1) %> hours)</small>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        
+        <% if @booking_request.notes.present? %>
+          <div class="mt-4">
+            <h6 class="text-muted">Your Notes</h6>
+            <div class="alert alert-light">
+              <%= simple_format(@booking_request.notes) %>
+            </div>
+          </div>
+        <% end %>
+        
+        <% if @booking_request.rejection_reason.present? %>
+          <div class="mt-4">
+            <h6 class="text-muted">Rejection Reason</h6>
+            <div class="alert alert-danger">
+              <%= simple_format(@booking_request.rejection_reason) %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      
+      <% if @booking_request.status == 'pending' %>
+        <div class="card-footer bg-light">
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              <i class="fas fa-clock me-1"></i>
+              Your request is being reviewed by our admin team.
+            </small>
+            <%= button_to "Cancel Request", cancel_booking_request_path(@booking_request), 
+                          method: :patch,
+                          class: "btn btn-outline-danger btn-sm",
+                          data: { confirm: "Are you sure you want to cancel this booking request?" } %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    
+    <% if @booking_request.lesson.present? %>
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="mb-0">Your Lesson</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-8">
+              <p class="mb-1"><strong>Lesson Status:</strong> 
+                <span class="badge bg-<%= @booking_request.lesson.status == 'scheduled' ? 'primary' : 
+                                        @booking_request.lesson.status == 'completed' ? 'success' : 
+                                        @booking_request.lesson.status == 'cancelled' ? 'danger' : 'secondary' %>">
+                  <%= @booking_request.lesson.status.titleize %>
+                </span>
+              </p>
+              <p class="mb-1"><strong>Scheduled Time:</strong> <%= @booking_request.lesson.start_time.strftime('%B %-d, %Y at %-I:%M %p') %></p>
+              <p class="mb-3"><strong>End Time:</strong> <%= @booking_request.lesson.end_time.strftime('%B %-d, %Y at %-I:%M %p') %></p>
+              
+              <% if @booking_request.lesson.notes.present? %>
+                <p class="mb-1"><strong>Lesson Notes:</strong></p>
+                <div class="alert alert-light">
+                  <%= simple_format(@booking_request.lesson.notes) %>
+                </div>
+              <% end %>
+            </div>
+            <div class="col-md-4">
+              <%= link_to "View Full Lesson Details", lesson_path(@booking_request.lesson), 
+                          class: "btn btn-primary w-100" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    
+    <div class="mt-4 text-center">
+      <%= link_to "Request Another Lesson", new_booking_request_path, 
+                  class: "btn btn-outline-primary" %>
+    </div>
+  </div>
+</div>

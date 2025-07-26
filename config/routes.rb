@@ -1,10 +1,7 @@
 Rails.application.routes.draw do
-
   devise_for :users
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
+  
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Render dynamic PWA files from app/views/pwa/*
@@ -15,14 +12,21 @@ Rails.application.routes.draw do
   root to: "pages#login"
   get "test_message", to: "pages#test_message"
 
+  # Student-facing booking requests
+  resources :booking_requests, only: [:index, :show, :new, :create] do
+    member do
+      patch :cancel
+    end
+  end
+
   resources :teachers do
-      get 'schedule', on: :member
-        resources :availabilities, only: [:index, :new, :create] do
+    get 'schedule', on: :member
+    resources :availabilities, only: [:index, :new, :create] do
       get 'month/:month', on: :collection, action: :index, as: :month
     end
   end
 
-    resources :locations do
+  resources :locations do
     resources :availabilities, only: [:index, :new, :create] do
       get 'month/:month', on: :collection, action: :index, as: :month
     end
@@ -36,6 +40,24 @@ Rails.application.routes.draw do
   # Admin routes - only accessible to admin users
   namespace :admin do
     root 'dashboard#index'
+    
+    # Booking management
+    resources :booking_requests, only: [:index, :show] do
+      member do
+        patch :approve
+        patch :reject
+      end
+    end
+    
+    # Lesson series (recurring lessons)
+    resources :lesson_series do
+      member do
+        post :generate_lessons
+        patch :pause
+        patch :resume
+      end
+    end
+    
     resources :users
     
     resources :students do
@@ -58,8 +80,37 @@ Rails.application.routes.draw do
       end
     end
     
-    resources :availabilities, only: [:index, :show, :edit, :update, :destroy]
+    resources :availabilities, only: [:index, :show, :edit, :update, :destroy] do
+      collection do
+        get :teacher_availability
+        get :location_availability
+        get :new_teacher_availability
+        get :new_location_availability
+        post :create_teacher_availability
+        post :create_location_availability
+      end
+    end
+    
+    resources :lessons do
+      member do
+        patch :cancel
+        patch :mark_completed
+        patch :mark_attended
+        patch :mark_no_show
+      end
+    end
+    
     resources :figures
+    
+    # Admin booking system
+    resources :booking, only: [:index, :new, :create] do
+      collection do
+        get :available_days
+        get :available_teachers
+        get :available_timeslots
+        get :calendar_view
+      end
+    end
   end
 
   resources :booking, only: [:index, :new, :create] do

@@ -1,0 +1,8 @@
+<option value="">Select a teacher...</option>
+<% teachers.each do |teacher| %>
+  <option value="<%= teacher.id %>"><%= teacher.name %></option>
+<% end %>
+
+<% if teachers.empty? %>
+  <option value="">No teachers available for this location and date</option>
+<% end %>

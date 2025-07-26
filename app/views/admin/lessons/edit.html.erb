@@ -1,0 +1,99 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Edit Lesson</h1>
+        <div>
+          <%= link_to "View Lesson", admin_lesson_path(@lesson), class: "btn btn-outline-primary" %>
+          <%= link_to "Back to Lessons", admin_lessons_path, class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h5>Update Lesson Details</h5>
+            </div>
+            <div class="card-body">
+              <%= render 'form' %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <!-- Current Lesson Info -->
+          <div class="card">
+            <div class="card-header">
+              <h6>Current Lesson</h6>
+            </div>
+            <div class="card-body">
+              <div class="small">
+                <div class="mb-2">
+                  <strong>Student:</strong> <%= @lesson.student.full_name %>
+                </div>
+                <div class="mb-2">
+                  <strong>Teacher:</strong> <%= @lesson.teacher.name %>
+                </div>
+                <div class="mb-2">
+                  <strong>Location:</strong> <%= @lesson.location.name %>
+                </div>
+                <div class="mb-2">
+                  <strong>Original Time:</strong><br>
+                  <%= @lesson.start_time.strftime("%A, %B %d, %Y at %I:%M %p") %>
+                </div>
+                <div class="mb-2">
+                  <strong>Duration:</strong> <%= @lesson.duration %> minutes
+                </div>
+                <div class="mb-2">
+                  <strong>Status:</strong>
+                  <% if @lesson.start_time > Time.current %>
+                    <span class="badge bg-success">Upcoming</span>
+                  <% elsif @lesson.start_time + @lesson.duration.minutes < Time.current %>
+                    <span class="badge bg-secondary">Completed</span>
+                  <% else %>
+                    <span class="badge bg-warning">In Progress</span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Warning for Past Lessons -->
+          <% if @lesson.start_time < Time.current %>
+            <div class="card mt-3 border-warning">
+              <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                  <i class="fas fa-exclamation-triangle"></i> 
+                  Past Lesson
+                </h6>
+              </div>
+              <div class="card-body">
+                <p class="small mb-2">
+                  This lesson has already occurred. Editing past lessons should be done carefully and may affect reporting.
+                </p>
+                <p class="small text-muted mb-0">
+                  Consider adding notes to the lesson plan instead of changing core details.
+                </p>
+              </div>
+            </div>
+          <% end %>
+          
+          <!-- Danger Zone -->
+          <div class="card mt-3 border-danger">
+            <div class="card-header bg-danger text-white">
+              <h6 class="mb-0">Danger Zone</h6>
+            </div>
+            <div class="card-body">
+              <p class="small mb-3">Deleting a lesson cannot be undone.</p>
+              <%= link_to "Delete Lesson", admin_lesson_path(@lesson), 
+                          method: :delete, 
+                          confirm: "Are you sure you want to delete this lesson? This action cannot be undone.", 
+                          class: "btn btn-outline-danger btn-sm" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
