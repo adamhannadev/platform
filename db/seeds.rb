@@ -56,9 +56,9 @@ user2 = User.create!(email: "adamhannadance@gmail.com", password: "password", ro
 teacher1 = Teacher.create!(first_name: "Adam", last_name: "Hanna", email: "adamhannadev@gmail.com", phone: "250-480-9246", user: user1)
 teacher2 = Teacher.create!(first_name: "Tyna", last_name: "Kottova", email: "adam.s.hanna@gmail.com", phone: "250-555-5555")
 
-# Create Students
-student1 = Student.create!(first_name: "Kami", last_name: "Norman", email: "adamhannadance@gmail.com", phone: "250-555-55555", user: user2)
-student2 = Student.create!(first_name: "Linda", last_name: "Gould", email: "info@adamhannaballroom.com", phone: "250-555-5555")
+# Assign a user to a student
+s1 = Student.third.user = user2
+s1.save!
 
 # Create Locations
 location1 = Location.create!(name: "Trinity", address: "2964 Tillicum Rd.", rate: 9.00)
@@ -71,3 +71,6 @@ av1 = teacher1.availabilities.create!(start_time: timenow, end_time: timenow + 5
 
 # Create Lessons
 lesson1 = Lesson.create(start_time: timenow, duration: 45, student: student1, teacher: teacher1, location: location1, plan: "Review Waltz and introduce Left Box Turn")
+
+# Enroll a student
+Student.first.figures = Figure.where(dance: "Waltz")

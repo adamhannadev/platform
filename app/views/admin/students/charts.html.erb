@@ -118,11 +118,19 @@
                     <%= progress_percent %>%
                   </div>
                 </div>
-                <small class="text-muted">
+                <small class="text-muted skills-text">
                   <%= completed_skills %> of <%= total_skills %> skills completed
                 </small>
               <% else %>
-                <p class="text-muted mb-0">No progress data available</p>
+                <div class="progress mb-2">
+                  <div class="progress-bar bg-secondary" role="progressbar" 
+                       style="width: 0%" 
+                       aria-valuenow="0" 
+                       aria-valuemin="0" aria-valuemax="100">
+                    0%
+                  </div>
+                </div>
+                <small class="text-muted skills-text">No progress data available</small>
               <% end %>
             </div>
           </div>
@@ -133,6 +141,51 @@
 </div>
 
 <script>
+function updateProgressSummary() {
+  const toggleCells = document.querySelectorAll('.toggle-cell');
+  const totalSkills = toggleCells.length;
+  let completedSkills = 0;
+  
+  // Count completed skills (cells with checkmarks)
+  toggleCells.forEach(cell => {
+    if (cell.textContent.trim() === "✓") {
+      completedSkills++;
+    }
+  });
+  
+  // Calculate percentage
+  const progressPercent = totalSkills > 0 ? ((completedSkills / totalSkills) * 100).toFixed(1) : 0;
+  
+  // Update progress bar
+  const progressBar = document.querySelector('.progress-bar');
+  const progressText = document.querySelector('.progress-text');
+  const skillsText = document.querySelector('.skills-text');
+  
+  if (progressBar) {
+    progressBar.style.width = progressPercent + '%';
+    progressBar.setAttribute('aria-valuenow', progressPercent);
+    progressBar.textContent = progressPercent + '%';
+  }
+  
+  if (skillsText) {
+    skillsText.textContent = `${completedSkills} of ${totalSkills} skills completed`;
+  }
+  
+  // Update progress bar color based on completion
+  if (progressBar) {
+    progressBar.className = 'progress-bar';
+    if (progressPercent >= 80) {
+      progressBar.classList.add('bg-success');
+    } else if (progressPercent >= 50) {
+      progressBar.classList.add('bg-info');
+    } else if (progressPercent >= 25) {
+      progressBar.classList.add('bg-warning');
+    } else {
+      progressBar.classList.add('bg-danger');
+    }
+  }
+}
+
 document.querySelectorAll('.toggle-cell').forEach(function(td) {
   td.addEventListener('click', function() {
     const chartId = td.dataset.chartId;
@@ -142,6 +195,9 @@ document.querySelectorAll('.toggle-cell').forEach(function(td) {
     // Toggle display immediately
     td.textContent = current ? "" : "✓";
     td.style.backgroundColor = current ? "#f8f9fa" : "#d4edda";
+    
+    // Update progress summary immediately
+    updateProgressSummary();
     
     // Send AJAX request to update the backend
     fetch(`/charts/${chartId}/toggle`, {
@@ -156,15 +212,24 @@ document.querySelectorAll('.toggle-cell').forEach(function(td) {
         // Revert on error
         td.textContent = current ? "✓" : "";
         td.style.backgroundColor = current ? "#d4edda" : "#f8f9fa";
+        // Recalculate progress after reverting
+        updateProgressSummary();
         alert('Error updating progress. Please try again.');
       }
     }).catch(error => {
       // Revert on error
       td.textContent = current ? "✓" : "";
       td.style.backgroundColor = current ? "#d4edda" : "#f8f9fa";
+      // Recalculate progress after reverting
+      updateProgressSummary();
       alert('Error updating progress. Please try again.');
     });
   });
+});
+
+// Initialize progress on page load
+document.addEventListener('DOMContentLoaded', function() {
+  updateProgressSummary();
 });
 </script>
 
