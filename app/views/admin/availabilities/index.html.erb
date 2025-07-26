@@ -2,12 +2,59 @@
   <div class="row">
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><%= @parent.class.name %> Availability - <%= @parent.name %></h1>
-        <div>
-          <%= link_to "New Availability", new_polymorphic_path([:admin, @parent, :availabilities]), class: "btn btn-primary" %>
-          <%= link_to "Back to #{@parent.class.name.pluralize}", polymorphic_path([:admin, @parent.class.name.downcase.pluralize.to_sym]), class: "btn btn-secondary" %>
-        </div>
+        <% if @parent %>
+          <h1><%= @parent.class.name %> Availability - <%= @parent.name %></h1>
+          <div>
+            <%= link_to "New Availability", new_polymorphic_path([:admin, @parent, :availabilities]), class: "btn btn-primary" %>
+            <%= link_to "Back to #{@parent.class.name.pluralize}", polymorphic_path([:admin, @parent.class.name.downcase.pluralize.to_sym]), class: "btn btn-secondary" %>
+          </div>
+        <% else %>
+          <h1>All Availability Slots</h1>
+          <div>
+            <%= link_to "Teachers", admin_teachers_path, class: "btn btn-outline-primary" %>
+            <%= link_to "Locations", admin_locations_path, class: "btn btn-outline-primary" %>
+          </div>
+        <% end %>
       </div>
+      
+      <% if @parent.nil? %>
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h6>Filter by Teacher</h6>
+              </div>
+              <div class="card-body">
+                <% if @teachers.any? %>
+                  <% @teachers.each do |teacher| %>
+                    <%= link_to teacher.name, admin_teacher_availabilities_path(teacher), 
+                                class: "btn btn-sm btn-outline-info me-2 mb-2" %>
+                  <% end %>
+                <% else %>
+                  <p class="text-muted mb-0">No teachers with availability</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h6>Filter by Location</h6>
+              </div>
+              <div class="card-body">
+                <% if @locations.any? %>
+                  <% @locations.each do |location| %>
+                    <%= link_to location.name, admin_location_availabilities_path(location), 
+                                class: "btn btn-sm btn-outline-success me-2 mb-2" %>
+                  <% end %>
+                <% else %>
+                  <p class="text-muted mb-0">No locations with availability</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
       
       <div class="card">
         <div class="card-body">
@@ -16,6 +63,10 @@
               <table class="table table-striped">
                 <thead>
                   <tr>
+                    <% unless @parent %>
+                      <th>Type</th>
+                      <th>Name</th>
+                    <% end %>
                     <th>Date</th>
                     <th>Start Time</th>
                     <th>End Time</th>
@@ -26,6 +77,18 @@
                 <tbody>
                   <% @availabilities.each do |availability| %>
                     <tr>
+                      <% unless @parent %>
+                        <td>
+                          <span class="badge bg-<%= availability.available_for.is_a?(Teacher) ? 'info' : 'success' %>">
+                            <%= availability.available_for.class.name %>
+                          </span>
+                        </td>
+                        <td>
+                          <%= link_to availability.available_for.name, 
+                                      polymorphic_path([:admin, availability.available_for]), 
+                                      class: "text-decoration-none" %>
+                        </td>
+                      <% end %>
                       <td><%= availability.start_time.strftime("%A, %B %d, %Y") %></td>
                       <td><%= availability.start_time.strftime("%I:%M %p") %></td>
                       <td><%= availability.end_time.strftime("%I:%M %p") %></td>
@@ -34,6 +97,7 @@
                         <%= "#{duration} hour#{'s' if duration != 1}" %>
                       </td>
                       <td>
+                        <%= link_to "View", admin_availability_path(availability), class: "btn btn-sm btn-outline-primary" %>
                         <%= link_to "Edit", edit_admin_availability_path(availability), class: "btn btn-sm btn-outline-secondary" %>
                         <%= link_to "Delete", admin_availability_path(availability), method: :delete, 
                                     confirm: "Are you sure?", class: "btn btn-sm btn-outline-danger" %>
@@ -46,8 +110,16 @@
           <% else %>
             <div class="text-center py-5">
               <h4 class="text-muted">No availability slots found</h4>
-              <p>Create availability slots to allow bookings for this <%= @parent.class.name.downcase %>.</p>
-              <%= link_to "Add First Availability", new_polymorphic_path([:admin, @parent, :availabilities]), class: "btn btn-primary" %>
+              <% if @parent %>
+                <p>Create availability slots to allow bookings for this <%= @parent.class.name.downcase %>.</p>
+                <%= link_to "Add First Availability", new_polymorphic_path([:admin, @parent, :availabilities]), class: "btn btn-primary" %>
+              <% else %>
+                <p>No availability slots have been created yet.</p>
+                <div>
+                  <%= link_to "Manage Teacher Availability", admin_teachers_path, class: "btn btn-primary me-2" %>
+                  <%= link_to "Manage Location Availability", admin_locations_path, class: "btn btn-primary" %>
+                </div>
+              <% end %>
             </div>
           <% end %>
         </div>

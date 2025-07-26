@@ -1,9 +1,18 @@
 class Admin::AvailabilitiesController < Admin::ApplicationController
   before_action :set_availability, only: [:show, :edit, :update, :destroy]
-  before_action :set_polymorphic_parent, only: [:index, :new, :create]
+  before_action :set_polymorphic_parent, only: [:new, :create]
+  before_action :set_parent_for_availability, only: [:edit, :update, :show]
 
   def index
-    @availabilities = @parent.availabilities.order(:start_time)
+    if @parent
+      # When viewing availabilities for a specific teacher or location
+      @availabilities = @parent.availabilities.order(:start_time)
+    else
+      # When viewing all availabilities
+      @availabilities = Availability.includes(:available_for).order(:start_time)
+      @teachers = Teacher.joins(:availabilities).distinct
+      @locations = Location.joins(:availabilities).distinct
+    end
   end
 
   def show
@@ -52,9 +61,16 @@ class Admin::AvailabilitiesController < Admin::ApplicationController
       @parent = Teacher.find(params[:teacher_id])
     elsif params[:location_id]
       @parent = Location.find(params[:location_id])
+    elsif action_name == 'index'
+      # Allow index without a parent to show all availabilities
+      @parent = nil
     else
       redirect_to admin_root_path, alert: 'Invalid availability context.'
     end
+  end
+
+  def set_parent_for_availability
+    @parent = @availability.available_for
   end
 
   def availability_params

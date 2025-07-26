@@ -6,6 +6,10 @@ class Teacher < ApplicationRecord
     accepts_nested_attributes_for :user
 
     def full_name
-        return self.first_name + " " + self.last_name
+        "#{first_name} #{last_name}".strip
+    end
+
+    def name
+        full_name
     end
 end

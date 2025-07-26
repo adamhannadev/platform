@@ -1,0 +1,102 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Edit Availability</h1>
+        <div>
+          <%= link_to "View", admin_availability_path(@availability), class: "btn btn-outline-primary" %>
+          <%= link_to "Back to Availability", polymorphic_path([:admin, @parent, :availabilities]), class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <%= form_with model: [:admin, @availability], local: true, class: "row g-3" do |form| %>
+            <% if @availability.errors.any? %>
+              <div class="col-12">
+                <div class="alert alert-danger">
+                  <h4><%= pluralize(@availability.errors.count, "error") %> prohibited this availability from being saved:</h4>
+                  <ul class="mb-0">
+                    <% @availability.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            <% end %>
+
+            <div class="col-12">
+              <div class="alert alert-info">
+                <strong><%= @parent.class.name %>:</strong> <%= @parent.name %>
+                <% if @parent.respond_to?(:email) && @parent.email.present? %>
+                  <br><small class="text-muted"><%= @parent.email %></small>
+                <% end %>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :start_time, "Start Date & Time", class: "form-label" %>
+              <%= form.datetime_local_field :start_time, class: "form-control", 
+                                          value: @availability.start_time&.strftime("%Y-%m-%dT%H:%M") %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :end_time, "End Date & Time", class: "form-label" %>
+              <%= form.datetime_local_field :end_time, class: "form-control",
+                                          value: @availability.end_time&.strftime("%Y-%m-%dT%H:%M") %>
+            </div>
+
+            <div class="col-12">
+              <div class="card bg-light">
+                <div class="card-body">
+                  <h6>Current Details</h6>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <strong>Date:</strong><br>
+                      <span class="text-muted"><%= @availability.start_time&.strftime("%A, %B %d, %Y") %></span>
+                    </div>
+                    <div class="col-md-4">
+                      <strong>Time:</strong><br>
+                      <span class="text-muted">
+                        <%= @availability.start_time&.strftime("%I:%M %p") %> - 
+                        <%= @availability.end_time&.strftime("%I:%M %p") %>
+                      </span>
+                    </div>
+                    <div class="col-md-4">
+                      <strong>Duration:</strong><br>
+                      <span class="text-muted">
+                        <% if @availability.start_time && @availability.end_time %>
+                          <% duration = ((@availability.end_time - @availability.start_time) / 1.hour).round(1) %>
+                          <%= "#{duration} hour#{'s' if duration != 1}" %>
+                        <% end %>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-text">
+                <strong>Tips:</strong>
+                <ul class="mb-0">
+                  <li>Make sure the end time is after the start time</li>
+                  <li>Consider typical lesson durations (1-2 hours)</li>
+                  <li>Check for conflicts with existing availability slots</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <%= form.submit "Update Availability", class: "btn btn-primary" %>
+              <%= link_to "Cancel", admin_availability_path(@availability), class: "btn btn-secondary" %>
+              <%= link_to "Delete", admin_availability_path(@availability), method: :delete, 
+                          confirm: "Are you sure you want to delete this availability slot?", 
+                          class: "btn btn-outline-danger" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

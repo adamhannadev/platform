@@ -58,7 +58,7 @@ Rails.application.routes.draw do
       end
     end
     
-    resources :availabilities, only: [:show, :edit, :update, :destroy]
+    resources :availabilities, only: [:index, :show, :edit, :update, :destroy]
     resources :figures
   end
 
